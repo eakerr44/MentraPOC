@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
+import '../styles/brand.css';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -13,10 +14,10 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: '📊' },
-    { name: 'Journal', href: '/journal', icon: '📝' },
-    { name: 'Problems', href: '/problems', icon: '🧩' },
-    { name: 'Help', href: '/help', icon: '❓' },
+    { name: 'Dashboard', href: '/dashboard', icon: '📊', emoji: '🏠' },
+    { name: 'Journal', href: '/journal', icon: '📝', emoji: '📓' },
+    { name: 'Problems', href: '/problems', icon: '🧩', emoji: '🎯' },
+    { name: 'Help', href: '/help', icon: '💡', emoji: '❓' },
   ];
 
   const isActive = (href: string) => location.pathname === href;
@@ -26,13 +27,13 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     setUserMenuOpen(false);
   };
 
-  const getRoleColor = (role: string) => {
+  const getRoleClass = (role: string) => {
     switch (role) {
-      case 'student': return 'bg-blue-100 text-blue-800';
-      case 'teacher': return 'bg-green-100 text-green-800';
-      case 'parent': return 'bg-purple-100 text-purple-800';
-      case 'admin': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'student': return 'role-student';
+      case 'teacher': return 'role-teacher';
+      case 'parent': return 'role-parent';
+      case 'admin': return 'role-admin';
+      default: return 'role-student';
     }
   };
 
@@ -42,53 +43,59 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       case 'teacher': return 'Teacher';
       case 'parent': return 'Parent';
       case 'admin': return 'Admin';
-      default: return role;
+      default: return 'User';
     }
   };
 
+  const getUserInitials = (firstName?: string, lastName?: string) => {
+    return `${firstName?.[0] || ''}${lastName?.[0] || ''}`.toUpperCase() || 'U';
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="layout-container">
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div 
           className="fixed inset-0 flex z-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         >
-          <div className="fixed inset-0 bg-gray-600 bg-opacity-75" />
-          <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white shadow-xl">
+          <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity animate-fade-in" />
+          <div className="relative flex-1 flex flex-col max-w-xs w-full sidebar animate-slide-in">
             <div className="absolute top-0 right-0 -mr-12 pt-2">
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                className="ml-1 flex items-center justify-center h-10 w-10 rounded-full text-white hover:bg-white hover:bg-opacity-20 transition-colors focus:outline-none"
               >
                 <span className="sr-only">Close sidebar</span>
-                <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
+            
             <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
+              {/* Mobile Logo */}
               <div className="flex-shrink-0 flex items-center px-4 mb-8">
-                <div className="flex items-center">
-                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                    <span className="text-white font-bold text-lg">M</span>
-                  </div>
-                  <span className="ml-2 text-xl font-bold text-gray-900">Mentra</span>
+                <div className="logo-container">
+                  <img 
+                    src="/assets/logo/mentra-icon.svg" 
+                    alt="Mentra" 
+                    className="logo-image"
+                  />
+                  <span className="logo-text">Mentra</span>
                 </div>
               </div>
+              
+              {/* Mobile Navigation */}
               <nav className="px-2 space-y-1">
                 {navigation.map((item) => (
                   <Link
                     key={item.name}
                     to={item.href}
-                    className={`group flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
-                      isActive(item.href)
-                        ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700'
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                    }`}
+                    className={`nav-item ${isActive(item.href) ? 'active' : ''}`}
                     onClick={() => setSidebarOpen(false)}
                   >
-                    <span className="mr-3 text-lg">{item.icon}</span>
+                    <span className="nav-icon">{item.emoji}</span>
                     {item.name}
                   </Link>
                 ))}
@@ -100,32 +107,49 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
       {/* Desktop sidebar */}
       <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0">
-        <div className="flex-1 flex flex-col min-h-0 bg-white border-r border-gray-200 shadow-sm">
+        <div className="flex-1 flex flex-col min-h-0 sidebar">
           <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
+            {/* Desktop Logo */}
             <div className="flex items-center flex-shrink-0 px-4 mb-8">
-              <div className="flex items-center">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">M</span>
-                </div>
-                <span className="ml-2 text-xl font-bold text-gray-900">Mentra</span>
+              <div className="logo-container">
+                <img 
+                  src="/assets/logo/mentra-logo.svg" 
+                  alt="Mentra" 
+                  className="h-8 w-auto"
+                />
               </div>
             </div>
+            
+            {/* Desktop Navigation */}
             <nav className="flex-1 px-2 space-y-2">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
                   to={item.href}
-                  className={`group flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
-                    isActive(item.href)
-                      ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700 shadow-sm'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                  }`}
+                  className={`nav-item ${isActive(item.href) ? 'active' : ''}`}
                 >
-                  <span className="mr-3 text-lg">{item.icon}</span>
+                  <span className="nav-icon">{item.emoji}</span>
                   {item.name}
                 </Link>
               ))}
             </nav>
+
+            {/* Sprig Encouragement */}
+            <div className="mt-auto px-4 py-4">
+              <div className="card" style={{background: 'linear-gradient(135deg, var(--mentra-blue-pale), var(--growth-green-pale))'}}>
+                <div className="flex items-center gap-3">
+                  <span style={{fontSize: '24px'}}>🌱</span>
+                  <div>
+                    <p className="text-caption font-medium" style={{color: 'var(--text-charcoal)'}}>
+                      Keep growing!
+                    </p>
+                    <p className="text-caption" style={{color: 'var(--text-charcoal-light)', fontSize: '10px'}}>
+                      You're doing great today ✨
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -133,14 +157,15 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* Main content */}
       <div className="lg:pl-64 flex flex-col flex-1">
         {/* Top navigation */}
-        <header className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-30">
+        <header className="header sticky top-0 z-30">
           <div className="px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between h-16">
               {/* Mobile menu button and title */}
               <div className="flex items-center">
                 <button
                   onClick={() => setSidebarOpen(true)}
-                  className="lg:hidden -ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 transition-colors"
+                  className="lg:hidden -ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-lg hover:bg-gray-50 transition-colors focus:outline-none"
+                  style={{color: 'var(--text-charcoal-light)'}}
                 >
                   <span className="sr-only">Open sidebar</span>
                   <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -149,54 +174,52 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </button>
                 
                 {/* Page title for mobile */}
-                <h1 className="lg:hidden ml-2 text-lg font-semibold text-gray-900">
+                <h1 className="lg:hidden ml-2 text-lg font-semibold" style={{color: 'var(--text-charcoal)'}}>
                   {navigation.find(item => isActive(item.href))?.name || 'Mentra'}
                 </h1>
 
-                {/* Desktop logo for smaller screens */}
-                <div className="hidden lg:flex items-center">
-                  <div className="flex items-center">
-                    <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-600 rounded-md flex items-center justify-center">
-                      <span className="text-white font-bold text-sm">M</span>
-                    </div>
-                    <span className="ml-2 text-sm font-medium text-gray-500">
-                      {navigation.find(item => isActive(item.href))?.name || 'Dashboard'}
-                    </span>
-                  </div>
+                {/* Desktop breadcrumb */}
+                <div className="hidden lg:flex items-center gap-2">
+                  <img 
+                    src="/assets/logo/mentra-icon.svg" 
+                    alt="Mentra" 
+                    className="h-6 w-6"
+                  />
+                  <span className="text-caption" style={{color: 'var(--text-charcoal-light)'}}>
+                    {navigation.find(item => isActive(item.href))?.name || 'Dashboard'}
+                  </span>
                 </div>
               </div>
               
               {/* User menu */}
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center">
                 <div className="relative">
                   <button
                     onClick={() => setUserMenuOpen(!userMenuOpen)}
-                    className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors focus:outline-none"
                   >
                     {/* User avatar */}
                     <div className="flex-shrink-0">
                       {user?.avatar ? (
                         <img
-                          className="h-8 w-8 rounded-full object-cover"
+                          className="user-avatar"
                           src={user.avatar}
                           alt={`${user.firstName} ${user.lastName}`}
                         />
                       ) : (
-                        <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
-                          <span className="text-sm font-medium text-white">
-                            {user?.firstName?.[0]}{user?.lastName?.[0]}
-                          </span>
+                        <div className="user-avatar">
+                          {getUserInitials(user?.firstName, user?.lastName)}
                         </div>
                       )}
                     </div>
                     
                     {/* User info */}
                     <div className="hidden sm:block text-left">
-                      <p className="text-sm font-medium text-gray-900">
+                      <p className="text-body font-medium" style={{color: 'var(--text-charcoal)'}}>
                         {user?.firstName} {user?.lastName}
                       </p>
-                      <div className="flex items-center space-x-2">
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getRoleColor(user?.role || '')}`}>
+                      <div className="flex items-center gap-2">
+                        <span className={`text-caption px-2 py-1 rounded-full ${getRoleClass(user?.role || '')}`}>
                           {getRoleName(user?.role || '')}
                         </span>
                       </div>
@@ -204,9 +227,10 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                     
                     {/* Dropdown arrow */}
                     <svg
-                      className={`flex-shrink-0 h-4 w-4 text-gray-400 transition-transform duration-200 ${
+                      className={`flex-shrink-0 h-4 w-4 transition-transform duration-200 ${
                         userMenuOpen ? 'transform rotate-180' : ''
                       }`}
+                      style={{color: 'var(--text-charcoal-lighter)'}}
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -217,66 +241,64 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
                   {/* User dropdown menu */}
                   {userMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-56 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
-                      <div className="p-1">
-                        {/* User info section */}
-                        <div className="px-3 py-3 border-b border-gray-100">
-                          <p className="text-sm font-medium text-gray-900">
-                            {user?.firstName} {user?.lastName}
-                          </p>
-                          <p className="text-sm text-gray-500">{user?.email}</p>
-                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium mt-1 ${getRoleColor(user?.role || '')}`}>
-                            {getRoleName(user?.role || '')} Account
-                          </span>
-                        </div>
+                    <div className="absolute right-0 mt-2 user-menu animate-fade-in z-50">
+                      {/* User info section */}
+                      <div className="user-info">
+                        <p className="text-body font-medium" style={{color: 'var(--text-charcoal)'}}>
+                          {user?.firstName} {user?.lastName}
+                        </p>
+                        <p className="text-caption" style={{color: 'var(--text-charcoal-light)'}}>{user?.email}</p>
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-caption mt-2 ${getRoleClass(user?.role || '')}`}>
+                          {getRoleName(user?.role || '')} Account
+                        </span>
+                      </div>
+                      
+                      {/* Menu items */}
+                      <div className="py-1">
+                        <button
+                          onClick={() => {/* TODO: Profile settings */}}
+                          className="menu-item"
+                        >
+                          <svg className="h-4 w-4" style={{color: 'var(--text-charcoal-lighter)'}} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                          </svg>
+                          Profile Settings
+                        </button>
                         
-                        {/* Menu items */}
-                        <div className="py-1">
-                          <button
-                            onClick={() => {/* TODO: Profile settings */}}
-                            className="group flex items-center px-3 py-2 text-sm text-gray-700 rounded-md hover:bg-gray-50 hover:text-gray-900 w-full text-left transition-colors"
-                          >
-                            <svg className="mr-3 h-4 w-4 text-gray-400 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
-                            Profile Settings
-                          </button>
-                          
-                          <button
-                            onClick={() => {/* TODO: Preferences */}}
-                            className="group flex items-center px-3 py-2 text-sm text-gray-700 rounded-md hover:bg-gray-50 hover:text-gray-900 w-full text-left transition-colors"
-                          >
-                            <svg className="mr-3 h-4 w-4 text-gray-400 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            Preferences
-                          </button>
-                          
-                          <Link
-                            to="/help"
-                            className="group flex items-center px-3 py-2 text-sm text-gray-700 rounded-md hover:bg-gray-50 hover:text-gray-900 w-full text-left transition-colors"
-                            onClick={() => setUserMenuOpen(false)}
-                          >
-                            <svg className="mr-3 h-4 w-4 text-gray-400 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            Help & Support
-                          </Link>
-                        </div>
+                        <button
+                          onClick={() => {/* TODO: Preferences */}}
+                          className="menu-item"
+                        >
+                          <svg className="h-4 w-4" style={{color: 'var(--text-charcoal-lighter)'}} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          Preferences
+                        </button>
                         
-                        {/* Logout section */}
-                        <div className="border-t border-gray-100 py-1">
-                          <button
-                            onClick={handleLogout}
-                            className="group flex items-center px-3 py-2 text-sm text-red-700 rounded-md hover:bg-red-50 hover:text-red-900 w-full text-left transition-colors"
-                          >
-                            <svg className="mr-3 h-4 w-4 text-red-400 group-hover:text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                            </svg>
-                            Sign Out
-                          </button>
-                        </div>
+                        <Link
+                          to="/help"
+                          className="menu-item"
+                          onClick={() => setUserMenuOpen(false)}
+                        >
+                          <svg className="h-4 w-4" style={{color: 'var(--text-charcoal-lighter)'}} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          Help & Support
+                        </Link>
+                      </div>
+                      
+                      {/* Logout section */}
+                      <div className="border-t pt-1" style={{borderColor: 'var(--journal-sand-dark)'}}>
+                        <button
+                          onClick={handleLogout}
+                          className="menu-item danger"
+                        >
+                          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                          </svg>
+                          Sign Out
+                        </button>
                       </div>
                     </div>
                   )}
@@ -287,7 +309,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
         </header>
 
         {/* Page content */}
-        <main className="flex-1">
+        <main className="flex-1 p-6" style={{background: 'var(--journal-sand)'}}>
           {children}
         </main>
       </div>

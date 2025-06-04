@@ -1,0 +1,26 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Sprig Icon -->
+  <g id="sprig-icon">
+    <!-- Stem -->
+    <path d="M16 28 C16 20, 16 12, 16 6" stroke="#06D6A0" stroke-width="2.5" stroke-linecap="round" />
+    
+    <!-- Main Leaf -->
+    <path d="M16 6 C16 6, 21 3, 26 6 C28 8, 26 13, 21 13 C18 13, 16 10, 16 6 Z" fill="#06D6A0" />
+    
+    <!-- Secondary Leaf -->
+    <path d="M16 12 C16 12, 11 9, 9 12 C8 14, 10 17, 13 16 C15 15, 16 13, 16 12 Z" fill="#3A86FF" />
+    
+    <!-- Growth Bud -->
+    <circle cx="16" cy="6" r="2" fill="#FFD166" />
+    
+    <!-- Root System -->
+    <path d="M16 28 C13 29, 11 30, 9 31 M16 28 C19 29, 21 30, 23 31" stroke="#06D6A0" stroke-width="1.5" stroke-linecap="round" opacity="0.6" />
+  </g>
+  
+  <!-- Growth Sparkles -->
+  <g id="sparkles" opacity="0.5">
+    <circle cx="27" cy="4" r="1" fill="#FFD166" />
+    <circle cx="24" cy="8" r="0.8" fill="#FF6B6B" />
+    <circle cx="6" cy="10" r="0.6" fill="#3A86FF" />
+  </g>
+</svg> 

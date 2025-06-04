@@ -30,7 +30,8 @@ class AccessControlAudit {
       const logEntry = {
         user_id: req.user?.id || null,
         user_role: req.user?.role || 'anonymous',
-        resource: resource,
+        resource_type: resource || 'unknown',
+        resource_id: req.params.studentId || req.params.childId || req.body.studentId || null,
         action: action,
         result: result, // 'granted', 'denied', 'error'
         reason: reason,
@@ -47,14 +48,13 @@ class AccessControlAudit {
 
       await pool.query(`
         INSERT INTO access_control_audit_log (
-          user_id, user_role, resource, action, result, reason,
-          ip_address, user_agent, request_data, created_at
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+          user_id, user_role, resource_type, resource_id, action, result,
+          ip_address, user_agent, created_at
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       `, [
-        logEntry.user_id, logEntry.user_role, logEntry.resource,
-        logEntry.action, logEntry.result, logEntry.reason,
-        logEntry.ip_address, logEntry.user_agent,
-        JSON.stringify(logEntry.request_data), logEntry.timestamp
+        logEntry.user_id, logEntry.user_role, logEntry.resource_type,
+        logEntry.resource_id, logEntry.action, logEntry.result,
+        logEntry.ip_address, logEntry.user_agent, logEntry.timestamp
       ]);
 
       // Log to console for development
