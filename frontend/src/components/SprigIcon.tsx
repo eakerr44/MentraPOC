@@ -15,10 +15,10 @@ export const SprigIcon: React.FC<SprigIconProps> = ({
 }) => {
   const getSizeClass = () => {
     switch (size) {
-      case 'sm': return 'w-4 h-4';
-      case 'md': return 'w-6 h-6';
-      case 'lg': return 'w-8 h-8';
-      default: return 'w-6 h-6';
+      case 'sm': return 'sprig-icon size-sm';
+      case 'md': return 'sprig-icon size-md';
+      case 'lg': return 'sprig-icon size-lg';
+      default: return 'sprig-icon size-md';
     }
   };
 
@@ -45,10 +45,6 @@ export const SprigIcon: React.FC<SprigIconProps> = ({
       src={`/assets/sprig/${type}.png`}
       alt={getAltText()}
       className={`${getSizeClass()} ${className}`}
-      style={{
-        filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1))',
-        imageRendering: 'auto'
-      }}
     />
   );
 };

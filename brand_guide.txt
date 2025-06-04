@@ -1,0 +1,95 @@
+**Mentra Figma-Ready Style Guide**
+
+---
+
+### 🌈 Color Palette: "Warm Discovery"
+
+| Token Name                | Hex Code | Usage                                     |
+| ------------------------- | -------- | ----------------------------------------- |
+| Primary / Mentra Blue     | #3A86FF  | Buttons, highlights, Sprig identity color |
+| Secondary / Growth Green  | #06D6A0  | Positive actions, check-ins, Sprig leaves |
+| Accent / Curiosity Coral  | #FF6B6B  | Micro-wins, reflection triggers           |
+| Background / Journal Sand | #FFF9F3  | Page backgrounds, gentle neutral          |
+| Highlight / Grit Gold     | #FFD166  | Sprig milestones, achievement highlights  |
+| Text / Charcoal           | #333333  | Primary text                              |
+| Text Light / Off-White    | #FAFAFA  | Text on dark backgrounds                  |
+
+Accessibility notes: All color combinations must meet WCAG AA contrast ratios. Use lighter tints and darker variants in Figma for hover/focus states.
+
+---
+
+### 🔤 Typography System
+
+**Primary Font:** DM Sans
+**Display Option:** Poppins (use for student-facing materials)
+
+| Text Style | Font    | Size | Weight   | Line Height | Use Case              |
+| ---------- | ------- | ---- | -------- | ----------- | --------------------- |
+| H1         | DM Sans | 48px | Bold     | 120%        | Hero headlines        |
+| H2         | DM Sans | 36px | SemiBold | 120%        | Section headers       |
+| Body Large | DM Sans | 18px | Regular  | 140%        | Descriptive content   |
+| Body       | DM Sans | 16px | Regular  | 140%        | Journaling, base UI   |
+| Caption    | DM Sans | 12px | Medium   | 130%        | Tooltips, helper text |
+
+Use sentence case for UI elements and maintain sufficient padding around text blocks.
+
+---
+
+### 📐 Spacing & Grid System
+
+* **Spacing Scale:** 4 / 8 / 16 / 24 / 32 / 64 px
+* **Grid:** 12-column layout, 72px margins (desktop), 16px gutters
+* **Mobile Grid:** 4-column layout, 16px margins
+
+Common Layout Blocks:
+
+* Card Padding: 16px internal / 24px external spacing
+* Button Padding: 12px top/bottom, 20px sides
+* Journal Entry Block: 32px padding, 8px border radius
+
+---
+
+### 🧩 UI Components
+
+| Component           | Style Details                                            |
+| ------------------- | -------------------------------------------------------- |
+| Primary Button      | Mentra Blue, white text, rounded corners, hover darkens  |
+| Secondary Button    | Outline style, Growth Green border and text              |
+| Input Field         | Rounded corners, Journal Sand background, Blue outline   |
+| Journal Tag         | Coral pill with icon + label                             |
+| Mentra Moment Badge | Grit Gold background, emoji & bold text                  |
+| Sprig Component     | Sprig icon with emotion status (growing, curious, proud) |
+
+Hover and disabled states defined using tints and opacity rules. Use auto layout in Figma components.
+
+---
+
+### 🎨 Visual Aesthetic + Sprig Integration
+
+* **Illustration Style:** Hand-drawn, soft edges, character-driven with minimal outlines
+* **Core Mascot:** Sprig—a plant-like, evolving character with a turquoise body and leafy growth symbolizing resilience and emotional learning
+* **Motifs:** Spirals (growth), constellations (connection), vines (effort)
+* **Textures:** Light gridlines, brushstroke overlays, emoji and sticker-like accents
+
+**Sprig Through the Ages:**
+
+* **K–2**: Small, playful with big eyes and bouncy motion
+* **3–5**: Slightly taller, shows reactions with sparkles and heart leaves
+* **6–8**: More upright, leaf cluster grows, emits calm energy
+* **9–12**: Slimmer silhouette, star effects, becomes a visual badge or journaling companion
+* **Graduating Senior**: Fully grown form, poised, slightly abstract—symbol of emotional maturity and identity continuity
+
+---
+
+### 📣 Voice & Tone
+
+**Voice:** Encouraging, reflective, playful-smart
+**Avoid:** Robotic commands, formal instruction language
+
+**Examples:**
+
+* ✅ “Tell us how it felt”
+* ❌ “Submit your response”
+
+Sprig’s messages follow this voice with gentle nudges, affirmation, and curiosity.
+

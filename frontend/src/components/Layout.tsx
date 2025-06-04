@@ -136,14 +136,14 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
             {/* Sprig Encouragement */}
             <div className="mt-auto px-4 py-4">
-              <div className="card" style={{background: 'linear-gradient(135deg, var(--mentra-blue-pale), var(--growth-green-pale))'}}>
+              <div className="sprig-encouragement">
                 <div className="flex items-center gap-3">
                   <SprigIcon type={sprigIcons.happy} size="lg" />
                   <div>
-                    <p className="text-caption font-medium" style={{color: 'var(--text-charcoal)'}}>
+                    <p className="encouraging-text">
                       Keep growing!
                     </p>
-                    <p className="text-caption" style={{color: 'var(--text-charcoal-light)', fontSize: '10px'}}>
+                    <p className="subtitle-text">
                       You're doing great today ✨
                     </p>
                   </div>

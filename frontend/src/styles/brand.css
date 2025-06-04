@@ -124,26 +124,42 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Button Components */
 .btn-primary {
-  background-color: var(--mentra-blue);
+  background: linear-gradient(135deg, var(--mentra-blue), var(--mentra-blue-hover));
   color: var(--text-off-white);
   padding: 12px 20px;
-  border-radius: var(--radius-md);
-  font-weight: 500;
+  border-radius: var(--radius-lg);
+  font-weight: 600;
   font-size: var(--text-base);
   border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--spacing-sm);
   text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn-primary:hover::before {
+  left: 100%;
 }
 
 .btn-primary:hover {
-  background-color: var(--mentra-blue-hover);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
 }
 
 .btn-secondary {
@@ -175,7 +191,20 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: var(--radius-lg);
   padding: var(--spacing-md);
   box-shadow: var(--shadow-sm);
-  border: 1px solid rgba(58, 134, 255, 0.1);
+  border: 1px solid rgba(58, 134, 255, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--mentra-blue), var(--growth-green), var(--curiosity-coral));
+  opacity: 0.6;
 }
 
 .card-lg {
@@ -266,18 +295,19 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Layout Components */
 .layout-container {
-  background-color: var(--journal-sand);
+  background: linear-gradient(135deg, var(--journal-sand) 0%, #FFFBF7 100%);
   min-height: 100vh;
 }
 
 .sidebar {
-  background: white;
+  background: linear-gradient(180deg, white 0%, var(--journal-sand) 100%);
   border-right: 1px solid var(--journal-sand-dark);
   box-shadow: var(--shadow-sm);
 }
 
 .header {
-  background: white;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--journal-sand-dark);
   box-shadow: var(--shadow-sm);
 }
@@ -287,6 +317,22 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
+}
+
+.logo-container img {
+  height: 28px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Desktop sidebar logo */
+.sidebar .logo-container img {
+  height: 32px;
+}
+
+/* Mobile header logo */
+.header .logo-container img {
+  height: 24px;
 }
 
 .logo-image {
@@ -305,31 +351,56 @@ h1, h2, h3, h4, h5, h6 {
 .nav-item {
   display: flex;
   align-items: center;
-  padding: var(--spacing-md);
+  padding: 12px var(--spacing-md);
   color: var(--text-charcoal-light);
   text-decoration: none;
-  border-radius: var(--radius-md);
-  transition: all 0.2s ease;
+  border-radius: var(--radius-lg);
+  transition: all 0.3s ease;
   font-weight: 500;
   gap: var(--spacing-md);
+  margin: 2px 0;
+  position: relative;
+}
+
+.nav-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--mentra-blue);
+  border-radius: 0 2px 2px 0;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
 }
 
 .nav-item:hover {
-  background-color: var(--mentra-blue-pale);
+  background: linear-gradient(135deg, var(--mentra-blue-pale), var(--growth-green-pale));
   color: var(--mentra-blue);
+  transform: translateX(4px);
+}
+
+.nav-item:hover::before {
+  transform: scaleX(1);
 }
 
 .nav-item.active {
-  background-color: var(--mentra-blue-pale);
+  background: linear-gradient(135deg, var(--mentra-blue-pale), var(--growth-green-pale));
   color: var(--mentra-blue);
-  border-right: 3px solid var(--mentra-blue);
   font-weight: 600;
+  transform: translateX(4px);
 }
 
-.nav-icon {
-  font-size: var(--text-lg);
-  width: 24px;
-  text-align: center;
+.nav-item.active::before {
+  transform: scaleX(1);
+}
+
+/* Consistent Icon Sizing for Navigation */
+.nav-item .sprig-icon {
+  width: 20px !important;
+  height: 20px !important;
+  margin-right: 4px;
 }
 
 /* User Menu */
@@ -348,8 +419,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .user-avatar {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: var(--radius-full);
   background: linear-gradient(135deg, var(--mentra-blue), var(--growth-green));
   display: flex;
@@ -357,7 +428,8 @@ h1, h2, h3, h4, h5, h6 {
   justify-content: center;
   color: var(--text-off-white);
   font-weight: 600;
-  font-size: var(--text-lg);
+  font-size: 14px;
+  box-shadow: var(--shadow-sm);
 }
 
 .menu-item {
@@ -388,6 +460,34 @@ h1, h2, h3, h4, h5, h6 {
 .menu-item.danger:hover {
   background-color: var(--curiosity-coral-pale);
   color: var(--curiosity-coral-hover);
+}
+
+/* Sprig Encouragement Widget */
+.sprig-encouragement {
+  background: linear-gradient(135deg, var(--mentra-blue-pale), var(--growth-green-pale));
+  border: 1px solid var(--growth-green-light);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+  margin: var(--spacing-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.sprig-encouragement .sprig-icon {
+  width: 32px !important;
+  height: 32px !important;
+}
+
+/* Warm, Encouraging Typography */
+.encouraging-text {
+  font-family: var(--font-display);
+  color: var(--text-charcoal);
+  font-weight: 500;
+}
+
+.subtitle-text {
+  color: var(--text-charcoal-light);
+  font-size: 11px;
+  opacity: 0.8;
 }
 
 /* Responsive Design */
@@ -442,4 +542,30 @@ h1, h2, h3, h4, h5, h6 {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* Sprig Icon Sizing */
+.sprig-icon {
+  display: inline-block;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+/* Size variants for Sprig icons */
+.sprig-icon.size-sm,
+img[src*="/assets/sprig/"].w-4 {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.sprig-icon.size-md,
+img[src*="/assets/sprig/"].w-6 {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.sprig-icon.size-lg,
+img[src*="/assets/sprig/"].w-8 {
+  width: 24px !important;
+  height: 24px !important;
 } 

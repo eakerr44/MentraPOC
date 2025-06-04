@@ -30,12 +30,11 @@ class AccessControlAudit {
       const logEntry = {
         user_id: req.user?.id || null,
         user_role: req.user?.role || 'anonymous',
-        resource_type: resource || 'unknown',
-        resource_id: req.params.studentId || req.params.childId || req.body.studentId || null,
+        resource_type: resource,
+        resource_id: req.params?.id || req.params?.studentId || null,
         action: action,
-        result: result, // 'granted', 'denied', 'error'
-        reason: reason,
-        ip_address: req.ip || req.connection.remoteAddress,
+        result: result,
+        ip_address: req.ip || req.connection?.remoteAddress,
         user_agent: req.headers['user-agent'],
         timestamp: new Date(),
         request_data: {
@@ -46,16 +45,25 @@ class AccessControlAudit {
         }
       };
 
-      await pool.query(`
-        INSERT INTO access_control_audit_log (
-          user_id, user_role, resource_type, resource_id, action, result,
-          ip_address, user_agent, created_at
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-      `, [
-        logEntry.user_id, logEntry.user_role, logEntry.resource_type,
-        logEntry.resource_id, logEntry.action, logEntry.result,
-        logEntry.ip_address, logEntry.user_agent, logEntry.timestamp
-      ]);
+      // Try to insert audit log, but don't crash if table/columns don't exist
+      try {
+        await pool.query(`
+          INSERT INTO access_control_audit_log (
+            user_id, user_role, resource_type, resource_id, action, result,
+            ip_address, user_agent, created_at
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        `, [
+          logEntry.user_id, logEntry.user_role, logEntry.resource_type,
+          logEntry.resource_id, logEntry.action, logEntry.result,
+          logEntry.ip_address, logEntry.user_agent, logEntry.timestamp
+        ]);
+      } catch (dbError) {
+        // Silently fail if table doesn't exist or columns are missing
+        // This prevents the middleware from crashing the app
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('Access control audit logging failed (non-critical):', dbError.message);
+        }
+      }
 
       // Log to console for development
       if (process.env.NODE_ENV === 'development') {
