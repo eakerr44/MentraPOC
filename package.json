@@ -1,0 +1,58 @@
+{
+  "name": "mentra-proof-of-concept",
+  "version": "1.0.0",
+  "description": "AI-native learning platform emphasizing learning journey over task completion",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "install:all": "npm install && npm install --prefix backend && npm install --prefix frontend",
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "build": "npm run build --prefix frontend && npm run build --prefix backend",
+    "start": "npm run start --prefix backend",
+    "test": "npm run test --prefix backend && npm run test --prefix frontend",
+    "lint": "npm run lint --prefix backend && npm run lint --prefix frontend",
+    "clean": "rm -rf node_modules frontend/node_modules backend/node_modules frontend/dist backend/dist",
+    "migrate": "npm run migrate --prefix backend",
+    "deploy": "./scripts/deploy.sh",
+    "deploy:dev": "./scripts/deploy.sh development",
+    "deploy:staging": "./scripts/deploy.sh staging",
+    "deploy:prod": "./scripts/deploy.sh production",
+    "deploy:dry-run": "./scripts/deploy.sh development --dry-run",
+    "env:validate": "npm run validate-env --prefix backend",
+    "env:setup": "./scripts/setup-env.sh",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "docker:build": "docker-compose build",
+    "docker:prod": "docker-compose -f docker-compose.prod.yml up -d",
+    "docker:prod-build": "docker-compose -f docker-compose.prod.yml build",
+    "backup:create": "./scripts/backup.sh create",
+    "backup:restore": "./scripts/backup.sh restore",
+    "logs:backend": "tail -f backend/logs/mentra.log",
+    "logs:deploy": "tail -f logs/deploy-*.log",
+    "health:check": "curl -s http://localhost:3001/health | jq ."
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mentra-ai/proof-of-concept.git"
+  },
+  "license": "PROPRIETARY",
+  "author": "Mentra Team",
+  "keywords": [
+    "education",
+    "ai",
+    "learning",
+    "scaffolding",
+    "edtech"
+  ]
+} 

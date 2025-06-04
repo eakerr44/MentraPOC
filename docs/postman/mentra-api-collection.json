@@ -1,0 +1,977 @@
+{
+  "info": {
+    "name": "Mentra API v1.0.0",
+    "description": "Comprehensive API collection for the Mentra AI-native learning platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3001",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "🔐 Authentication Flow",
+      "item": [
+        {
+          "name": "Register Student",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    console.log('Registration successful:', response.message);",
+                  "} else {",
+                  "    console.log('Registration failed:', pm.response.json());",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"demo-student@mentra.test\",\n  \"password\": \"SecurePass123!\",\n  \"confirmPassword\": \"SecurePass123!\",\n  \"role\": \"student\",\n  \"firstName\": \"Demo\",\n  \"lastName\": \"Student\",\n  \"gradeLevel\": 10,\n  \"learningStyle\": \"visual\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Register Teacher",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"demo-teacher@mentra.test\",\n  \"password\": \"SecurePass123!\",\n  \"confirmPassword\": \"SecurePass123!\",\n  \"role\": \"teacher\",\n  \"firstName\": \"Demo\",\n  \"lastName\": \"Teacher\",\n  \"schoolName\": \"Demo High School\",\n  \"subjectsTaught\": [\"Mathematics\", \"Science\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Register Parent",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"demo-parent@mentra.test\",\n  \"password\": \"SecurePass123!\",\n  \"confirmPassword\": \"SecurePass123!\",\n  \"role\": \"parent\",\n  \"firstName\": \"Demo\",\n  \"lastName\": \"Parent\",\n  \"relationshipType\": \"parent\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login (Student)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('accessToken', response.accessToken);",
+                  "    pm.collectionVariables.set('userId', response.user.id);",
+                  "    console.log('Login successful! Access token set.');",
+                  "    console.log('User:', response.user);",
+                  "} else {",
+                  "    console.log('Login failed:', pm.response.json());",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"demo-student@mentra.test\",\n  \"password\": \"SecurePass123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "me"]
+            }
+          }
+        },
+        {
+          "name": "Verify Token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/verify",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "verify"]
+            }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "refresh"]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "logout"]
+            }
+          }
+        },
+        {
+          "name": "Logout All Devices",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/logout-all",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "logout-all"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏥 Health & Status",
+      "item": [
+        {
+          "name": "System Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            }
+          }
+        },
+        {
+          "name": "Database Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/database/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "database", "status"]
+            }
+          }
+        },
+        {
+          "name": "Vector Database Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/vector-db/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "vector-db", "status"]
+            }
+          }
+        },
+        {
+          "name": "Context Manager Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/context/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "context", "status"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📊 Student Dashboard",
+      "item": [
+        {
+          "name": "Student Overview",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/student/overview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "dashboard", "student", "overview"]
+            }
+          }
+        },
+        {
+          "name": "Student Goals",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/student/goals?status=active&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "dashboard", "student", "goals"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "active"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Goal",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Master Quadratic Equations\",\n  \"description\": \"Understand and solve quadratic equations confidently\",\n  \"category\": \"mathematics\",\n  \"targetDate\": \"2024-03-15\",\n  \"milestones\": [\n    {\n      \"title\": \"Learn the quadratic formula\",\n      \"description\": \"Memorize and understand ax² + bx + c = 0\"\n    },\n    {\n      \"title\": \"Practice 20 problems\",\n      \"description\": \"Solve various quadratic equation problems\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/student/goals",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "dashboard", "student", "goals"]
+            }
+          }
+        },
+        {
+          "name": "Update Goal",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Master Quadratic Equations - Updated\",\n  \"progress\": 25,\n  \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/student/goals/:goalId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "dashboard", "student", "goals", ":goalId"],
+              "variable": [
+                {
+                  "key": "goalId",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Student Progress",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/student/progress",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "dashboard", "student", "progress"]
+            }
+          }
+        },
+        {
+          "name": "Student Achievements",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/student/achievements",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "dashboard", "student", "achievements"]
+            }
+          }
+        },
+        {
+          "name": "Activity Feed",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/student/activity-feed",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "dashboard", "student", "activity-feed"]
+            }
+          }
+        },
+        {
+          "name": "Learning Insights",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/student/learning-insights",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "dashboard", "student", "learning-insights"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🎨 Dashboard Customization",
+      "item": [
+        {
+          "name": "Layout Management",
+          "item": [
+            {
+              "name": "Get Dashboard Layout",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/dashboard-customization/layout",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "dashboard-customization", "layout"]
+                }
+              }
+            },
+            {
+              "name": "Save Dashboard Layout",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"layoutData\": {\n    \"widgets\": [\n      {\n        \"templateId\": \"student_overview\",\n        \"widgetKey\": \"overview_1234\",\n        \"title\": \"My Learning Overview\",\n        \"positionX\": 0,\n        \"positionY\": 0,\n        \"width\": 8,\n        \"height\": 4,\n        \"visible\": true,\n        \"locked\": false,\n        \"customProps\": {\n          \"theme\": \"dark\",\n          \"showDetails\": true\n        }\n      }\n    ]\n  },\n  \"saveAsPreset\": false\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/dashboard-customization/layout",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "dashboard-customization", "layout"]
+                }
+              }
+            },
+            {
+              "name": "Add Widget",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"templateId\": \"current_goals\",\n  \"title\": \"My Learning Goals\",\n  \"width\": 6,\n  \"height\": 4,\n  \"customProps\": {\n    \"showProgress\": true\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/dashboard-customization/widgets",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "dashboard-customization", "widgets"]
+                }
+              }
+            },
+            {
+              "name": "Update Widget Position",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"x\": 2,\n  \"y\": 1,\n  \"width\": 8,\n  \"height\": 3\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/dashboard-customization/widgets/:widgetKey/position",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "dashboard-customization", "widgets", ":widgetKey", "position"],
+                  "variable": [
+                    {
+                      "key": "widgetKey",
+                      "value": "overview_1234"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Update Widget Settings",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Updated Widget Title\",\n  \"visible\": true,\n  \"locked\": false,\n  \"customProps\": {\n    \"theme\": \"light\",\n    \"updated\": true\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/dashboard-customization/widgets/:widgetKey/settings",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "dashboard-customization", "widgets", ":widgetKey", "settings"],
+                  "variable": [
+                    {
+                      "key": "widgetKey",
+                      "value": "overview_1234"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Remove Widget",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/dashboard-customization/widgets/:widgetKey",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "dashboard-customization", "widgets", ":widgetKey"],
+                  "variable": [
+                    {
+                      "key": "widgetKey",
+                      "value": "overview_1234"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Theme Management",
+          "item": [
+            {
+              "name": "Get Theme Preferences",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/dashboard-customization/theme",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "dashboard-customization", "theme"]
+                }
+              }
+            },
+            {
+              "name": "Update Theme",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"themeName\": \"dark\",\n  \"primaryColor\": \"#4f46e5\",\n  \"secondaryColor\": \"#1e1b4b\",\n  \"accentColor\": \"#f59e0b\",\n  \"backgroundType\": \"solid\",\n  \"backgroundValue\": \"#1a1a1a\",\n  \"fontFamily\": \"sans-serif\",\n  \"fontSizeScale\": 1.1,\n  \"borderRadius\": 12,\n  \"shadowIntensity\": \"strong\",\n  \"animationEnabled\": true,\n  \"reducedMotion\": false,\n  \"highContrast\": false\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/dashboard-customization/theme",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "dashboard-customization", "theme"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Widget Templates",
+          "item": [
+            {
+              "name": "Get Widget Templates",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/dashboard-customization/widget-templates?category=overview",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "dashboard-customization", "widget-templates"],
+                  "query": [
+                    {
+                      "key": "category",
+                      "value": "overview"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Widget Categories",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/dashboard-customization/widget-templates/categories",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "dashboard-customization", "widget-templates", "categories"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Analytics & Recommendations",
+          "item": [
+            {
+              "name": "Get Recommendations",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/dashboard-customization/recommendations",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "dashboard-customization", "recommendations"]
+                }
+              }
+            },
+            {
+              "name": "Get Analytics",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/dashboard-customization/analytics?timeframe=30d",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "dashboard-customization", "analytics"],
+                  "query": [
+                    {
+                      "key": "timeframe",
+                      "value": "30d"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Track Interaction",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sessionId\": \"session_123\",\n  \"widgetId\": \"overview_1234\",\n  \"actionType\": \"widget_configured\",\n  \"actionDetails\": {\n    \"updatedFields\": [\"title\", \"theme\"]\n  },\n  \"durationSeconds\": 15\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/dashboard-customization/track",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "dashboard-customization", "track"]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "🧠 AI & Context (Dev Only)",
+      "item": [
+        {
+          "name": "Test AI Response",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prompt\": \"Help me understand quadratic equations. I'm struggling with the concept.\",\n  \"options\": {\n    \"temperature\": 0.7,\n    \"maxTokens\": 500,\n    \"context\": \"mathematics tutoring\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/ai/test",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "ai", "test"]
+            }
+          }
+        },
+        {
+          "name": "AI Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/ai/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "ai", "health"]
+            }
+          }
+        },
+        {
+          "name": "Get AI Models",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/ai/models",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "ai", "models"]
+            }
+          }
+        },
+        {
+          "name": "Get AI Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/ai/info",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "ai", "info"]
+            }
+          }
+        },
+        {
+          "name": "Store Test Context",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentId\": \"student-123\",\n  \"content\": \"Student successfully solved quadratic equation using the formula method\",\n  \"contextType\": \"SCAFFOLDING_INTERACTION\",\n  \"subject\": \"mathematics\",\n  \"difficulty\": \"medium\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/context/test-store",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "context", "test-store"]
+            }
+          }
+        },
+        {
+          "name": "Retrieve Test Context",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentId\": \"student-123\",\n  \"content\": \"I need help with another quadratic equation problem\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/context/test-retrieve",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "context", "test-retrieve"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🧪 Test Workflows",
+      "item": [
+        {
+          "name": "Complete Authentication Flow",
+          "item": [
+            {
+              "name": "1. Check Health",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Health check successful', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "    const response = pm.response.json();",
+                      "    pm.expect(response.status).to.eql('healthy');",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/health",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["health"]
+                }
+              }
+            },
+            {
+              "name": "2. Register User",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Registration successful', function () {",
+                      "    pm.response.to.have.status(201);",
+                      "    const response = pm.response.json();",
+                      "    pm.expect(response.success).to.be.true;",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"workflow-test@mentra.test\",\n  \"password\": \"SecurePass123!\",\n  \"confirmPassword\": \"SecurePass123!\",\n  \"role\": \"student\",\n  \"firstName\": \"Test\",\n  \"lastName\": \"Student\",\n  \"gradeLevel\": 10,\n  \"learningStyle\": \"visual\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/register",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "auth", "register"]
+                }
+              }
+            },
+            {
+              "name": "3. Login",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Login successful', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "    const response = pm.response.json();",
+                      "    pm.expect(response.success).to.be.true;",
+                      "    pm.expect(response.accessToken).to.exist;",
+                      "    pm.collectionVariables.set('accessToken', response.accessToken);",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"workflow-test@mentra.test\",\n  \"password\": \"SecurePass123!\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/login",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "auth", "login"]
+                }
+              }
+            },
+            {
+              "name": "4. Get Dashboard",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Dashboard access successful', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "    const response = pm.response.json();",
+                      "    pm.expect(response.success).to.be.true;",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/dashboard/student/overview",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "dashboard", "student", "overview"]
+                }
+              }
+            },
+            {
+              "name": "5. Logout",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Logout successful', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "    const response = pm.response.json();",
+                      "    pm.expect(response.success).to.be.true;",
+                      "    pm.collectionVariables.set('accessToken', '');",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/logout",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "auth", "logout"]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Auto-set authorization header if access token exists",
+          "const accessToken = pm.collectionVariables.get('accessToken');",
+          "if (accessToken && accessToken.length > 0) {",
+          "    pm.request.headers.add({",
+          "        key: 'Authorization',",
+          "        value: `Bearer ${accessToken}`",
+          "    });",
+          "}"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global test logging",
+          "if (pm.response.code !== 200 && pm.response.code !== 201) {",
+          "    console.log('Response Status:', pm.response.status);",
+          "    console.log('Response Body:', pm.response.text());",
+          "}"
+        ]
+      }
+    }
+  ]
+} 

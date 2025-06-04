@@ -1,0 +1,159 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Rule: Final Integration Test and System Check
+
+## Purpose
+
+This rule is run after **all tasks and sub-tasks are marked complete (`[x]`)**. It performs a **system-wide integrity check** to confirm that the feature or capability behaves correctly end-to-end, no regressions were introduced, and code quality standards (e.g., linting, formatting, dependency mapping) are met.
+
+This is the **final quality gate** before shipping the feature.
+
+---
+
+## Process
+
+### 1. ✅ Confirm Task List Completion
+
+- Ensure all sub-tasks are marked `[x]`
+- Validate that all task dependencies listed in the `## Dependencies` section are satisfied
+- Cross-check that all files listed in `## Relevant Files` exist and match the architectural mapping
+
+---
+
+### 2. 🧪 Simulate End-to-End Test Scenarios
+
+- Reconstruct the intended behavior across UI, logic, data, and API layers
+- Simulate:
+  - User journeys (if applicable)
+  - Expected side effects and async flows
+  - Edge cases and failure states
+- If integration or functional tests already exist, simulate their results. If not, infer what they would test.
+
+---
+
+### 3. 🧼 Perform Code Quality Checks
+
+- Simulate running linting tools (e.g., ESLint)
+- Simulate type safety checks (e.g., `tsc` for TypeScript projects)
+- Simulate formatting validation (e.g., Prettier)
+- Highlight any violations, errors, or warnings
+- Evaluate any problems in the code (e.g., declared but value is never used, missing modules etc.)
+
+---
+
+### 4. 🔎 Architectural & Dependency Integrity Check
+
+- Cross-reference the `## Architecture` block to validate:
+  - Expected imports and component relationships
+  - Contract consistency between files (props, arguments, return types)
+  - No circular or broken dependencies
+- Detect if changes in later tasks broke assumptions made by earlier tasks
+
+---
+
+### 5. ✅ If Everything Passes
+
+Output the following:
+
+```markdown
+## ✅ Final Integration Summary: [Feature Name]
+
+### Task Completion
+- Tasks: ✅ All complete
+- Dependencies: ✅ Respected
+- Files: ✅ Verified against architecture
+
+### Test Results
+- End-to-End Flow: ✅ Passed
+- Edge Cases: ✅ Passed
+- Async Behavior: ✅ Verified
+
+### Code Quality
+- Lint: ✅ Clean
+- Format: ✅ Conforms to standard
+- Type Safety: ✅ Passed
+
+🟢 This feature is clean, stable, and ready to ship.
+
+### 6. ✅ If any end-to-end test, static check, or system integrity validation fails, follow this structured remediation protocol:
+
+6A. Diagnose the Issue
+
+- Identify the exact failure point:
+    - File name and function or component affected
+    - Error message or failed behavior
+    - Associated task(s) from the task list (if traceable)
+    - Determine the cause type:
+    - Logic error
+    - Broken state/data flow
+    - API mismatch
+    - Unhandled edge case
+    - Regression introduced by a later task
+
+6B. Define the Expected Behavior
+
+- Clearly describe what should have happened if the feature worked correctly
+- Compare it against the observed behavior or failed test output
+- This forms the basis of the remediation scope
+
+6C. Break the Fix into Sub-Tasks
+
+Before making any changes:
+
+- Break the required remediation into discrete sub-tasks using the following rules:
+- Each task must have a Complexity Score (CS) ≤ 3
+- Each task should address one clear goal (e.g., “Handle empty string in input parser”)
+- Add dependencies where necessary to enforce execution order
+- Map affected files and components to each sub-task
+
+6D. Create a Remediation Task List
+
+Format it using the same structure as the original task list:
+
+## Relevant Files: List all affected or missing files
+## Dependencies: Show blocking task relationships (e.g., “1.1 ➡️ 2.0”)
+## Complexity: Show task scores and rationales
+## Tasks: Enumerate parent and sub-tasks using checkbox format
+6E. Pause and Ask for Approval
+
+Do not fix code immediately.
+
+Instead, ask the user:
+
+“Integration testing uncovered one or more issues. Would you like me to generate and begin executing a structured remediation task list?”
+Only begin work on the remediation plan after explicit user approval.
+
+## Output Format for Remediation Task List
+
+## 🔧 Suggested Remediation Task List: [Feature Name Fixes]
+
+### Relevant Files
+
+- `ComponentX.tsx` – Broken state logic
+- `useUpload.ts` – Missing error handler
+
+### Dependencies
+
+- 1.1 ➡️ 2.1  # Logic fix before UI test
+
+### Complexity
+
+| Task ID | CS | Rationale |
+|---------|----|-----------|
+| 1.0     | 2  | State fix in hook
+| 2.0     | 3  | UI test for upload failure
+
+### Tasks
+
+- [ ] 1.0 Fix Hook Logic
+  - [ ] 1.1 Add error handling to `useUpload`
+  - [ ] 1.2 Propagate error to calling component
+
+- [ ] 2.0 Write Integration Test
+  - [ ] 2.1 Simulate upload failure in E2E test
+  - [ ] 2.2 Verify error message shows in UI
+
+...
