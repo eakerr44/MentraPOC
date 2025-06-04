@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
@@ -9,7 +9,12 @@ import { Layout } from './components/Layout';
 import { useAuthStore } from './stores/authStore';
 
 function App() {
-  const { user, isAuthenticated } = useAuthStore();
+  const { user, isAuthenticated, initializeDemoUser } = useAuthStore();
+
+  // Auto-initialize demo user for testing
+  useEffect(() => {
+    initializeDemoUser();
+  }, [initializeDemoUser]);
 
   return (
     <Router>

@@ -18,7 +18,18 @@ interface AuthState {
   login: (user: User, token?: string) => Promise<void>;
   logout: () => void;
   updateProfile: (updates: Partial<User>) => void;
+  initializeDemoUser: () => void;
 }
+
+// Demo user for testing
+const demoUser: User = {
+  id: 'demo-user-1',
+  email: 'demo@mentra.com',
+  firstName: 'Demo',
+  lastName: 'User',
+  role: 'student',
+  createdAt: new Date().toISOString()
+};
 
 export const useAuthStore = create<AuthState>()(
   persist(
@@ -51,6 +62,17 @@ export const useAuthStore = create<AuthState>()(
         if (currentUser) {
           set({
             user: { ...currentUser, ...updates }
+          });
+        }
+      },
+
+      initializeDemoUser: () => {
+        const state = get();
+        if (!state.isAuthenticated) {
+          set({
+            user: demoUser,
+            isAuthenticated: true,
+            token: `demo-token-${demoUser.id}`
           });
         }
       }
