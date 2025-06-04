@@ -366,11 +366,35 @@ const enforceDataRetention = async (req, res, next) => {
   }
 };
 
+// Basic role-based access control middleware
+const roleCheck = (allowedRoles) => {
+  return (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({
+        error: 'Authentication required',
+        message: 'Must be authenticated to access this resource'
+      });
+    }
+
+    const userRole = req.user.role;
+
+    if (!allowedRoles.includes(userRole)) {
+      return res.status(403).json({
+        error: 'Access denied',
+        message: `This endpoint requires one of these roles: ${allowedRoles.join(', ')}`
+      });
+    }
+
+    next();
+  };
+};
+
 module.exports = {
   requireClassroomAccess,
   requireParentChildRelationship,
   requireTeacherStudentRelationship,
   requirePrivacyConsent,
   requireFeatureAccess,
-  enforceDataRetention
+  enforceDataRetention,
+  roleCheck
 }; 
