@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
+import { SprigIcon, sprigIcons } from './SprigIcon';
 import '../styles/brand.css';
 
 interface LayoutProps {
@@ -14,10 +15,10 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: '📊', emoji: '🏠' },
-    { name: 'Journal', href: '/journal', icon: '📝', emoji: '📓' },
-    { name: 'Problems', href: '/problems', icon: '🧩', emoji: '🎯' },
-    { name: 'Help', href: '/help', icon: '💡', emoji: '❓' },
+    { name: 'Dashboard', href: '/dashboard', sprigIcon: sprigIcons.dashboard },
+    { name: 'Journal', href: '/journal', sprigIcon: sprigIcons.journal },
+    { name: 'Problems', href: '/problems', sprigIcon: sprigIcons.problems },
+    { name: 'Help', href: '/help', sprigIcon: sprigIcons.help },
   ];
 
   const isActive = (href: string) => location.pathname === href;
@@ -78,11 +79,10 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
               <div className="flex-shrink-0 flex items-center px-4 mb-8">
                 <div className="logo-container">
                   <img 
-                    src="/assets/logo/mentra-icon.svg" 
-                    alt="Mentra" 
-                    className="logo-image"
+                    src="/assets/logo/logo_with_words.png" 
+                    alt="Mentra - AI-native learning platform" 
+                    className="h-8 w-auto"
                   />
-                  <span className="logo-text">Mentra</span>
                 </div>
               </div>
               
@@ -95,7 +95,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                     className={`nav-item ${isActive(item.href) ? 'active' : ''}`}
                     onClick={() => setSidebarOpen(false)}
                   >
-                    <span className="nav-icon">{item.emoji}</span>
+                    <SprigIcon type={item.sprigIcon} size="md" className="nav-icon" />
                     {item.name}
                   </Link>
                 ))}
@@ -113,9 +113,9 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div className="flex items-center flex-shrink-0 px-4 mb-8">
               <div className="logo-container">
                 <img 
-                  src="/assets/logo/mentra-logo.svg" 
-                  alt="Mentra" 
-                  className="h-8 w-auto"
+                  src="/assets/logo/logo_with_words.png" 
+                  alt="Mentra - AI-native learning platform"
+                  className="h-10 w-auto"
                 />
               </div>
             </div>
@@ -128,7 +128,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                   to={item.href}
                   className={`nav-item ${isActive(item.href) ? 'active' : ''}`}
                 >
-                  <span className="nav-icon">{item.emoji}</span>
+                  <SprigIcon type={item.sprigIcon} size="md" className="nav-icon" />
                   {item.name}
                 </Link>
               ))}
@@ -138,7 +138,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div className="mt-auto px-4 py-4">
               <div className="card" style={{background: 'linear-gradient(135deg, var(--mentra-blue-pale), var(--growth-green-pale))'}}>
                 <div className="flex items-center gap-3">
-                  <span style={{fontSize: '24px'}}>🌱</span>
+                  <SprigIcon type={sprigIcons.happy} size="lg" />
                   <div>
                     <p className="text-caption font-medium" style={{color: 'var(--text-charcoal)'}}>
                       Keep growing!
@@ -179,11 +179,10 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </h1>
 
                 {/* Desktop breadcrumb */}
-                <div className="hidden lg:flex items-center gap-2">
-                  <img 
-                    src="/assets/logo/mentra-icon.svg" 
-                    alt="Mentra" 
-                    className="h-6 w-6"
+                <div className="hidden lg:flex items-center gap-3">
+                  <SprigIcon 
+                    type={navigation.find(item => isActive(item.href))?.sprigIcon || sprigIcons.dashboard} 
+                    size="md" 
                   />
                   <span className="text-caption" style={{color: 'var(--text-charcoal-light)'}}>
                     {navigation.find(item => isActive(item.href))?.name || 'Dashboard'}
