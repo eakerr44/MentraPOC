@@ -179,11 +179,11 @@ const cleanupExpiredSessions = async () => {
     const deleteQuery = `
       DELETE FROM user_sessions 
       WHERE expires_at < CURRENT_TIMESTAMP
-      RETURNING COUNT(*) as cleaned_count
+      RETURNING id
     `;
 
     const [result] = await sequelize.query(deleteQuery);
-    const cleanedCount = result[0]?.cleaned_count || 0;
+    const cleanedCount = result.length;
 
     if (cleanedCount > 0) {
       console.log(`🧹 Cleaned up ${cleanedCount} expired sessions`);
