@@ -487,7 +487,191 @@ cd frontend && npm run dev -- --force
 
 ---
 
-## 🤖 AI Service Issues
+## 🚨 Critical Setup Issues (Recently Fixed)
+
+> **Important:** These are critical issues that were discovered and fixed in the Mentra POC. These fixes prevent complete application failure.
+
+### Backend Crashes
+
+#### Problem: "TypeError: roleCheck is not a function"
+```bash
+# Error message
+TypeError: roleCheck is not a function
+    at Object.<anonymous> (/path/to/backend/src/routes/dashboard.js:27:50)
+
+# Root Cause
+The roleCheck function was imported but never defined/exported in the middleware file.
+
+# Symptoms
+- Backend crashes immediately on startup
+- All API endpoints fail to load
+- Complete application failure
+
+# Solution 1: Verify roleCheck function exists
+cat backend/src/middleware/role-check.js
+# Should contain proper roleCheck function definition and export
+
+# Solution 2: If missing, the function should be:
+```javascript
+const roleCheck = (allowedRoles) => {
+  return (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+
+    if (!allowedRoles.includes(req.user.role)) {
+      return res.status(403).json({ error: 'Insufficient permissions' });
+    }
+
+    next();
+  };
+};
+
+module.exports = { roleCheck };
+```
+
+# Solution 3: Restart backend after fix
+cd backend && npm run dev
+```
+
+#### Problem: "Database session cleanup error - aggregate functions not allowed"
+```bash
+# Error message
+Failed to cleanup expired sessions: Error
+aggregate functions are not allowed in RETURNING
+
+# Root Cause
+PostgreSQL doesn't allow COUNT(*) in RETURNING clause of DELETE statements.
+
+# Symptoms
+- Backend starts but shows database error
+- Session cleanup fails
+- May cause memory leaks over time
+
+# Solution: Update auth-service.js cleanup query
+# Change from:
+DELETE FROM user_sessions WHERE expires_at < CURRENT_TIMESTAMP RETURNING COUNT(*) as cleaned_count
+
+# To:
+DELETE FROM user_sessions WHERE expires_at < CURRENT_TIMESTAMP
+
+# Fix automatically applied in auth-service.js - should not occur in fresh installations
+```
+
+### Frontend White Screen Issues
+
+#### Problem: "Frontend shows only white screen with no content"
+```bash
+# Symptoms
+- Browser shows completely blank page
+- No error messages in console
+- Vite dev server runs but serves empty content
+
+# Root Cause 1: Missing index.html
+ls -la frontend/index.html
+# If missing, creates Vite build failure
+
+# Solution 1: Create frontend/index.html
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mentra - AI-Native Learning Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="root">
+      <div class="loading-screen">
+        <div class="loading-spinner"></div>
+        <p>Loading Mentra...</p>
+      </div>
+    </div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+```
+
+# Root Cause 2: Missing index.css
+ls -la frontend/src/index.css
+# If missing, creates import resolution failure
+
+# Solution 2: Create frontend/src/index.css with base styles
+# (File contains 400+ lines of essential CSS - see fixed version)
+```
+
+#### Problem: "Module resolution failures - Cannot resolve import"
+```bash
+# Error messages
+Failed to resolve import "./pages/LoginPage" from "src/App.tsx"
+Failed to resolve import "./stores/authStore" from various files
+
+# Root Cause
+Essential React components and stores were missing from the frontend.
+
+# Missing Files Checklist:
+ls -la frontend/src/pages/LoginPage.tsx      # Login interface
+ls -la frontend/src/pages/DashboardPage.tsx # Dashboard routing  
+ls -la frontend/src/pages/ProblemsPage.tsx  # Problem solving interface
+ls -la frontend/src/components/Layout.tsx   # App layout wrapper
+ls -la frontend/src/stores/authStore.ts     # Authentication state management
+
+# Solution: All missing components have been created
+# Check git log for commits containing these fixes
+git log --oneline | grep -E "(frontend|components|missing)"
+```
+
+#### Problem: "Dashboard components require numeric IDs but receive strings"
+```bash
+# Error message
+Property 'userId' expects number but received string
+
+# Root Cause
+Demo auth system generates string IDs but dashboard components expect numbers.
+
+# Solution: ID conversion in DashboardPage.tsx
+const numericId = parseInt(user.id.split('-').pop() || '1', 10) || 1;
+
+# Fixed in DashboardPage component - passes converted numeric IDs to dashboards
+```
+
+### Recovery After These Fixes
+
+#### Complete Recovery Verification
+```bash
+# 1. Verify backend starts without errors
+cd backend && npm run dev
+# Should show "Mentra backend running on http://localhost:3001"
+
+# 2. Verify frontend builds and runs
+cd frontend && npm run dev  
+# Should show "Local: http://localhost:5173/"
+
+# 3. Test end-to-end functionality
+curl http://localhost:3001/health
+curl http://localhost:5173
+# Both should return successful responses
+
+# 4. Verify all components load
+# Open browser to http://localhost:5173
+# Should show Mentra login page, not white screen
+```
+
+#### Signs of Successful Fix
+- ✅ Backend starts without crashes
+- ✅ Frontend serves actual HTML content
+- ✅ Login page displays properly
+- ✅ Dashboard routing works for all user types
+- ✅ No import resolution errors in console
+- ✅ Vite hot reload functions properly
+
+---
+
+## �� AI Service Issues
 
 ### AI Connection Issues
 
