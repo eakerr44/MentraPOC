@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mentra - AI-Native Learning Platform</title>
+    <meta name="description" content="Mentra is an AI-native learning platform that provides personalized educational experiences for students, teachers, and parents." />
+    
+    <!-- Font imports for better typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+      /* Reset and base styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+          'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background-color: #f8fafc;
+        color: #1e293b;
+        line-height: 1.6;
+      }
+      
+      #root {
+        min-height: 100vh;
+        width: 100%;
+      }
+      
+      /* Loading spinner styles */
+      .loading-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        flex-direction: column;
+        gap: 2rem;
+      }
+      
+      .loading-spinner {
+        width: 3rem;
+        height: 3rem;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-top: 4px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      .loading-text {
+        font-size: 1.25rem;
+        font-weight: 500;
+        text-align: center;
+      }
+      
+      .loading-subtitle {
+        font-size: 0.875rem;
+        opacity: 0.8;
+        text-align: center;
+        max-width: 24rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <!-- Loading fallback that shows while React loads -->
+      <div class="loading-container">
+        <div style="text-align: center;">
+          <h1 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem;">Mentra</h1>
+          <p style="font-size: 1.125rem; margin-bottom: 2rem; opacity: 0.9;">AI-Native Learning Platform</p>
+        </div>
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading your learning experience...</div>
+        <div class="loading-subtitle">
+          Preparing personalized dashboards, AI-guided journaling, and intelligent problem-solving tools
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html> 
