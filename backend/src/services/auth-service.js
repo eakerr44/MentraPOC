@@ -159,14 +159,14 @@ const revokeAllUserSessions = async (userId) => {
     const deleteQuery = `
       DELETE FROM user_sessions 
       WHERE user_id = $1
-      RETURNING COUNT(*) as revoked_count
+      RETURNING id
     `;
 
     const [result] = await sequelize.query(deleteQuery, {
       replacements: [userId]
     });
 
-    return result[0]?.revoked_count || 0;
+    return result.length;
   } catch (error) {
     console.error('Failed to revoke all user sessions:', error);
     return 0;

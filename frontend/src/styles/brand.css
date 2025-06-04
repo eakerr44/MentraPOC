@@ -325,23 +325,23 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .logo-container img {
-  height: 40px;
+  height: 80px;
   width: auto;
   object-fit: contain;
 }
 
 /* Desktop sidebar logo */
 .sidebar .logo-container img {
-  height: 48px;
+  height: 96px;
 }
 
 /* Mobile header logo */
 .header .logo-container img {
-  height: 36px;
+  height: 72px;
 }
 
 .logo-image {
-  height: 32px;
+  height: 80px;
   width: auto;
 }
 
@@ -403,8 +403,8 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Consistent Icon Sizing for Navigation */
 .nav-item .sprig-icon {
-  width: 20px !important;
-  height: 20px !important;
+  width: 32px !important;
+  height: 32px !important;
   margin-right: 4px;
 }
 
@@ -414,12 +414,12 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-xl);
   border: 1px solid var(--journal-sand-dark);
-  padding: var(--spacing-sm);
-  min-width: 240px;
+  padding: 4px;
+  min-width: 220px;
 }
 
 .user-info {
-  padding: var(--spacing-md);
+  padding: 12px;
   border-bottom: 1px solid var(--journal-sand-dark);
 }
 
@@ -440,17 +440,17 @@ h1, h2, h3, h4, h5, h6 {
 .menu-item {
   display: flex;
   align-items: center;
-  padding: var(--spacing-md);
+  padding: 8px 12px;
   color: var(--text-charcoal);
   text-decoration: none;
   border-radius: var(--radius-md);
   transition: all 0.2s ease;
-  gap: var(--spacing-md);
+  gap: 8px;
   width: 100%;
   border: none;
   background: none;
   cursor: pointer;
-  font-size: var(--text-base);
+  font-size: 14px;
 }
 
 .menu-item:hover {
@@ -563,20 +563,20 @@ h1, h2, h3, h4, h5, h6 {
 /* Size variants for Sprig icons */
 .sprig-icon.size-sm,
 img[src*="/assets/sprig/"].w-4 {
-  width: 16px !important;
-  height: 16px !important;
-}
-
-.sprig-icon.size-md,
-img[src*="/assets/sprig/"].w-6 {
   width: 20px !important;
   height: 20px !important;
 }
 
+.sprig-icon.size-md,
+img[src*="/assets/sprig/"].w-6 {
+  width: 32px !important;
+  height: 32px !important;
+}
+
 .sprig-icon.size-lg,
 img[src*="/assets/sprig/"].w-8 {
-  width: 24px !important;
-  height: 24px !important;
+  width: 40px !important;
+  height: 40px !important;
 }
 
 /* Navigation positioning */
@@ -668,4 +668,19 @@ img[src*="/assets/sprig/"].w-8 {
 .sprig-encouragement .sprig-icon {
   width: 20px !important;
   height: 20px !important;
+}
+
+/* Make menu item icons smaller */
+.menu-item svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+/* Make user info text smaller */
+.user-info .text-body {
+  font-size: 14px;
+}
+
+.user-info .text-caption {
+  font-size: 11px;
 } 
