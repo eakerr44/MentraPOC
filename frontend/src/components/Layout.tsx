@@ -172,7 +172,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                   
                   {/* Dropdown arrow */}
                   <svg
-                    className={`flex-shrink-0 h-4 w-4 transition-transform duration-200 ${
+                    className={`flex-shrink-0 h-3 w-3 transition-transform duration-200 ${
                       userMenuOpen ? 'transform rotate-180' : ''
                     }`}
                     fill="none"
