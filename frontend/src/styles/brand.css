@@ -477,25 +477,39 @@ h1, h2, h3, h4, h5, h6 {
   position: relative;
 }
 
-/* Sprig Encouragement Widget - Position relative to main content area */
+/* Sprig Encouragement Widget - Toast-style notification */
 .sprig-encouragement {
   background: linear-gradient(135deg, var(--mentra-blue-pale), var(--growth-green-pale));
   border: 1px solid var(--growth-green-light);
   border-radius: var(--radius-lg);
   padding: var(--spacing-md);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
   position: fixed;
-  top: var(--spacing-xl);
-  right: var(--spacing-xl); /* Position relative to the right edge */
-  max-width: 280px;
-  z-index: 5;
-  /* Center it better over the main content area */
-  transform: translateX(-50px); /* Move it left from the right edge */
+  top: var(--spacing-lg);
+  right: var(--spacing-lg);
+  max-width: 320px;
+  min-width: 280px;
+  z-index: 1000; /* Higher z-index to appear above content */
+  animation: slideInFromRight 0.3s ease-out;
+  transition: all 0.3s ease;
+}
+
+/* Animation for the encouragement widget appearing */
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .sprig-encouragement .sprig-icon {
   width: 32px !important;  /* Match navigation icon size */
   height: 32px !important;
+  flex-shrink: 0; /* Prevent icon from shrinking */
 }
 
 /* Warm, Encouraging Typography */
@@ -675,5 +689,52 @@ img[src*="/assets/sprig/"].w-8 {
 }
 
 .user-info .text-caption {
+  color: var(--text-charcoal-lighter);
   font-size: 11px;
+}
+
+/* AI Tutor Chat Input Isolation */
+.ai-tutor-input {
+  position: relative !important;
+  z-index: 20 !important;
+  pointer-events: auto !important;
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  isolation: isolate;
+}
+
+.ai-tutor-input:focus {
+  z-index: 25 !important;
+  outline: 2px solid var(--mentra-blue) !important;
+  outline-offset: 2px !important;
+}
+
+.ai-tutor-container {
+  position: relative;
+  z-index: 15;
+  isolation: isolate;
+}
+
+/* Prevent text selection on non-input elements during chat interaction */
+.ai-tutor-welcome * {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  pointer-events: none;
+}
+
+.ai-tutor-welcome .ai-tutor-input,
+.ai-tutor-welcome .ai-tutor-input * {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  pointer-events: auto !important;
+}
+
+.ai-tutor-welcome button {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  pointer-events: auto !important;
 } 

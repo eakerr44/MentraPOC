@@ -31,7 +31,18 @@ const api = axios.create({
 
 // Add auth token to requests
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('authToken');
+  // Get token from Zustand persistence (same location as dashboardApi)
+  let token = null;
+  try {
+    const persistedState = localStorage.getItem('mentra-auth-storage');
+    if (persistedState) {
+      const authState = JSON.parse(persistedState);
+      token = authState.state?.token;
+    }
+  } catch (error) {
+    console.warn('Failed to get auth token from persistence:', error);
+  }
+  
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

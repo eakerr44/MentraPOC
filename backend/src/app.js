@@ -10,6 +10,9 @@ const { setupSecurity } = require('./middleware/security');
 const authRoutes = require('./routes/auth');
 const dashboardRoutes = require('./routes/dashboard');
 const dashboardCustomizationRoutes = require('./routes/dashboard-customization');
+const journalRoutes = require('./routes/journal');
+const problemsRoutes = require('./routes/problems');
+const aiTutorRoutes = require('./routes/ai-tutor');
 
 require('dotenv').config();
 
@@ -303,6 +306,9 @@ if (process.env.NODE_ENV === 'development') {
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/dashboard-customization', dashboardCustomizationRoutes);
+app.use('/api/journal', journalRoutes);
+app.use('/api/problems', problemsRoutes);
+app.use('/api/ai-tutor', aiTutorRoutes);
 
 // Main API info endpoint
 app.get('/api/v1', (req, res) => {
@@ -325,8 +331,8 @@ app.get('/api/v1', (req, res) => {
       auth: '/api/v1/auth',
       dashboard: '/api/dashboard',
       dashboard_customization: '/api/dashboard-customization',
-      journal: '/api/v1/journal (coming soon)',
-      problems: '/api/v1/problems (coming soon)'
+      journal: '/api/journal',
+      problems: '/api/problems'
     },
     dashboard_endpoints: {
       student_overview: 'GET /api/dashboard/student/overview',

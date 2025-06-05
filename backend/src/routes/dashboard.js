@@ -150,6 +150,72 @@ router.get('/student/goals', authenticateJWT, roleCheck(['student']), async (req
     const userId = req.user.id;
     const status = req.query.status; // 'active', 'completed', 'paused', 'all'
     
+    // Development mode: Return mock data for demo tokens
+    if (process.env.NODE_ENV === 'development' && userId === 'demo-user-1') {
+      console.log('📈 Returning mock goals data for demo user');
+      
+      const mockGoals = [
+        {
+          id: 'goal-1',
+          title: 'Master Fraction Operations',
+          description: 'Complete 10 fraction problems with 90% accuracy',
+          category: 'academic',
+          status: 'active',
+          priority: 'high',
+          target_date: '2024-02-15',
+          created_at: '2024-01-15T00:00:00Z',
+          progress_percentage: 75,
+          total_milestones: 4,
+          completed_milestones: 3
+        },
+        {
+          id: 'goal-2',
+          title: 'Daily Learning Streak',
+          description: 'Maintain a 14-day learning streak',
+          category: 'personal',
+          status: 'active',
+          priority: 'medium',
+          target_date: '2024-02-01',
+          created_at: '2024-01-18T00:00:00Z',
+          progress_percentage: 50,
+          total_milestones: 14,
+          completed_milestones: 7
+        },
+        {
+          id: 'goal-3',
+          title: 'Science Project Completion',
+          description: 'Complete chemistry experiment project',
+          category: 'academic',
+          status: 'completed',
+          priority: 'high',
+          target_date: '2024-01-20',
+          created_at: '2024-01-10T00:00:00Z',
+          progress_percentage: 100,
+          total_milestones: 5,
+          completed_milestones: 5
+        }
+      ];
+
+      const filteredGoals = status && status !== 'all' 
+        ? mockGoals.filter(goal => goal.status === status)
+        : mockGoals;
+
+      return res.json({
+        goals: filteredGoals,
+        recentActivities: [
+          { id: 1, goal_title: 'Master Fraction Operations', activity_type: 'milestone_completed', created_at: '2024-01-20T10:00:00Z' },
+          { id: 2, goal_title: 'Daily Learning Streak', activity_type: 'progress_update', created_at: '2024-01-19T15:30:00Z' }
+        ],
+        summary: {
+          total: mockGoals.length,
+          active: mockGoals.filter(g => g.status === 'active').length,
+          completed: mockGoals.filter(g => g.status === 'completed').length,
+          averageProgress: mockGoals.reduce((acc, g) => acc + g.progress_percentage, 0) / mockGoals.length
+        }
+      });
+    }
+    
+    // Production code continues...
     const goalsQuery = `
       SELECT g.*, 
              COUNT(gm.id) as total_milestones,
@@ -328,6 +394,67 @@ router.get('/student/progress', authenticateJWT, roleCheck(['student']), async (
     const timeframe = req.query.timeframe || '30d';
     const metric = req.query.metric; // 'journal', 'problems', 'emotional', 'overall'
     
+    // Development mode: Return mock data for demo tokens
+    if (process.env.NODE_ENV === 'development' && userId === 'demo-user-1') {
+      console.log('📊 Returning mock progress data for demo user');
+      
+      return res.json({
+        timeframe: timeframe,
+        overallProgress: {
+          score: 78,
+          level: 'Progressing Well',
+          trend: 'up',
+          weeklyGrowth: 12
+        },
+        metrics: {
+          journal: {
+            score: 85,
+            entriesCount: 12,
+            averageLength: 150,
+            consistency: 'daily',
+            trend: 'up'
+          },
+          problems: {
+            score: 72,
+            sessionsCount: 8,
+            averageAccuracy: 84,
+            completionRate: 75,
+            trend: 'stable'
+          },
+          emotional: {
+            score: 80,
+            vocabularySize: 25,
+            selfAwarenessLevel: 'high',
+            regulationSkills: 'developing',
+            trend: 'up'
+          }
+        },
+        chartData: {
+          weeklyProgress: [
+            { week: 'Week 1', score: 65 },
+            { week: 'Week 2', score: 70 },
+            { week: 'Week 3', score: 75 },
+            { week: 'Week 4', score: 78 }
+          ],
+          skillBreakdown: [
+            { skill: 'Math', current: 75, target: 85 },
+            { skill: 'Writing', current: 82, target: 90 },
+            { skill: 'Science', current: 78, target: 80 },
+            { skill: 'Critical Thinking', current: 70, target: 85 }
+          ]
+        },
+        insights: [
+          'Your consistency in journaling has improved significantly!',
+          'Math problem-solving accuracy is trending upward.',
+          'Consider practicing more challenging problems to accelerate growth.'
+        ],
+        nextMilestones: [
+          { title: 'Reach 80% overall score', progress: 78, target: 80 },
+          { title: 'Complete 15 journal entries', progress: 12, target: 15 }
+        ]
+      });
+    }
+    
     const progressAnalyzer = getProgressAnalyzer();
     const progressData = await progressAnalyzer.getStudentProgress(userId, {
       timeframe: timeframe,
@@ -350,6 +477,92 @@ router.get('/student/achievements', authenticateJWT, roleCheck(['student']), asy
     const userId = req.user.id;
     const category = req.query.category; // 'learning', 'streak', 'goal', 'social', 'all'
     const limit = parseInt(req.query.limit) || 20;
+    
+    // Development mode: Return mock data for demo tokens
+    if (process.env.NODE_ENV === 'development' && userId === 'demo-user-1') {
+      console.log('🏆 Returning mock achievements data for demo user');
+      
+      const mockAchievements = [
+        {
+          id: 'ach-1',
+          title: 'Week Warrior',
+          description: 'Maintained a 7-day learning streak!',
+          category: 'streak',
+          category_name: 'Learning Consistency',
+          icon: '🔥',
+          points_earned: 100,
+          earned_at: '2024-01-20T00:00:00Z',
+          rarity: 'common'
+        },
+        {
+          id: 'ach-2',
+          title: 'Journal Master',
+          description: 'Completed 10 thoughtful journal entries',
+          category: 'learning',
+          category_name: 'Learning Progress',
+          icon: '📝',
+          points_earned: 150,
+          earned_at: '2024-01-18T00:00:00Z',
+          rarity: 'uncommon'
+        },
+        {
+          id: 'ach-3',
+          title: 'Problem Solver',
+          description: 'Solved 5 math problems with 90%+ accuracy',
+          category: 'learning',
+          category_name: 'Learning Progress',
+          icon: '🧮',
+          points_earned: 200,
+          earned_at: '2024-01-15T00:00:00Z',
+          rarity: 'rare'
+        },
+        {
+          id: 'ach-4',
+          title: 'Goal Getter',
+          description: 'Completed your first learning goal',
+          category: 'goal',
+          category_name: 'Goal Achievement',
+          icon: '🎯',
+          points_earned: 250,
+          earned_at: '2024-01-12T00:00:00Z',
+          rarity: 'epic'
+        },
+        {
+          id: 'ach-5',
+          title: 'Science Star',
+          description: 'Excelled in chemistry experiment',
+          category: 'learning',
+          category_name: 'Learning Progress',
+          icon: '⭐',
+          points_earned: 175,
+          earned_at: '2024-01-10T00:00:00Z',
+          rarity: 'uncommon'
+        }
+      ];
+
+      const filteredAchievements = category && category !== 'all' 
+        ? mockAchievements.filter(ach => ach.category === category)
+        : mockAchievements;
+
+      const limitedAchievements = filteredAchievements.slice(0, limit);
+
+      return res.json({
+        achievements: limitedAchievements,
+        statistics: {
+          total_achievements: mockAchievements.length,
+          recent_achievements: mockAchievements.filter(ach => 
+            new Date(ach.earned_at) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+          ).length,
+          categories_completed: [...new Set(mockAchievements.map(ach => ach.category))].length
+        },
+        categories: [
+          { id: 'learning', name: 'Learning Progress', description: 'Academic achievements' },
+          { id: 'streak', name: 'Learning Consistency', description: 'Consistency achievements' },
+          { id: 'goal', name: 'Goal Achievement', description: 'Goal completion achievements' },
+          { id: 'social', name: 'Social Learning', description: 'Collaboration achievements' }
+        ]
+      });
+    }
     
     const achievementsQuery = `
       SELECT a.*, ac.name as category_name, ac.description as category_description
@@ -394,6 +607,95 @@ router.get('/student/activity-feed', authenticateJWT, roleCheck(['student']), as
     const limit = parseInt(req.query.limit) || 15;
     const offset = parseInt(req.query.offset) || 0;
     
+    // Development mode: Return mock data for demo tokens
+    if (process.env.NODE_ENV === 'development' && userId === 'demo-user-1') {
+      console.log('📋 Returning mock activity feed data for demo user');
+      
+      const mockActivities = [
+        {
+          type: 'achievement_earned',
+          id: 'activity-1',
+          title: 'Week Warrior',
+          created_at: '2024-01-20T10:00:00Z',
+          metadata: { category: 'streak', points: 100 }
+        },
+        {
+          type: 'journal',
+          id: 'activity-2',
+          title: 'My Thoughts on Today\'s Learning',
+          created_at: '2024-01-20T09:30:00Z',
+          metadata: { mood: 'excited', tags: ['learning', 'growth'] }
+        },
+        {
+          type: 'problem',
+          id: 'activity-3',
+          title: 'Solving Linear Equations',
+          created_at: '2024-01-19T16:45:00Z',
+          metadata: { status: 'completed', difficulty: 'medium' }
+        },
+        {
+          type: 'goal',
+          id: 'activity-4',
+          title: 'Milestone completed in "Master Fraction Operations"',
+          created_at: '2024-01-19T15:30:00Z',
+          metadata: { activity_type: 'milestone_completed' }
+        },
+        {
+          type: 'journal',
+          id: 'activity-5',
+          title: 'Reflection on Science Experiment',
+          created_at: '2024-01-18T14:15:00Z',
+          metadata: { mood: 'curious', tags: ['science', 'chemistry'] }
+        },
+        {
+          type: 'problem',
+          id: 'activity-6',
+          title: 'Fraction Operations Practice',
+          created_at: '2024-01-18T11:20:00Z',
+          metadata: { status: 'completed', difficulty: 'easy' }
+        },
+        {
+          type: 'achievement_earned',
+          id: 'activity-7',
+          title: 'Journal Master',
+          created_at: '2024-01-18T10:00:00Z',
+          metadata: { category: 'learning', points: 150 }
+        },
+        {
+          type: 'streak_milestone',
+          id: 'activity-8',
+          title: 'Reached 7-day learning streak!',
+          created_at: '2024-01-17T12:00:00Z',
+          metadata: { streak_days: 7 }
+        },
+        {
+          type: 'goal',
+          id: 'activity-9',
+          title: 'Created new goal: "Daily Learning Streak"',
+          created_at: '2024-01-17T09:00:00Z',
+          metadata: { activity_type: 'goal_created' }
+        },
+        {
+          type: 'journal',
+          id: 'activity-10',
+          title: 'Weekly Learning Reflection',
+          created_at: '2024-01-16T17:30:00Z',
+          metadata: { mood: 'thoughtful', tags: ['reflection', 'week-review'] }
+        }
+      ];
+
+      const paginatedActivities = mockActivities.slice(offset, offset + limit);
+
+      return res.json({
+        activities: paginatedActivities,
+        pagination: {
+          limit: limit,
+          offset: offset,
+          hasMore: offset + limit < mockActivities.length
+        }
+      });
+    }
+    
     const activityQuery = `
       (
         SELECT 'journal' as type, je.id, je.title, je.created_at, 
@@ -414,8 +716,8 @@ router.get('/student/activity-feed', authenticateJWT, roleCheck(['student']), as
         SELECT 'goal' as type, ga.goal_id, ga.description, ga.created_at,
                json_build_object('activity_type', ga.activity_type) as metadata
         FROM goal_activities ga
-        JOIN student_goals sg ON ga.goal_id = sg.id
-        WHERE sg.student_id = $1
+        JOIN student_goals g ON ga.goal_id = g.id
+        WHERE g.student_id = $1
       )
       ORDER BY created_at DESC
       LIMIT $2 OFFSET $3

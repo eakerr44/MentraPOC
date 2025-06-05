@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { 
   StudentDashboardOverview, 
   GoalsData, 
@@ -10,9 +11,50 @@ import {
   DashboardApiClient 
 } from '../types/dashboard';
 
-const API_BASE_URL = '/api/dashboard';
+// Create axios instance with base configuration
+const api = axios.create({
+  baseURL: (import.meta as any).env?.VITE_API_URL || 'http://localhost:3001/api',
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
-// Helper function to get auth token from Zustand persisted state
+// Add auth token to requests
+api.interceptors.request.use((config) => {
+  // Get token from Zustand persistence
+  let token = null;
+  try {
+    const persistedState = localStorage.getItem('mentra-auth-storage');
+    if (persistedState) {
+      const authState = JSON.parse(persistedState);
+      token = authState.state?.token;
+    }
+  } catch (error) {
+    console.warn('Failed to get auth token from persistence:', error);
+  }
+  
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Handle API errors
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Handle unauthorized - redirect to login
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
+const API_BASE_URL = '/dashboard';
+
+// Helper function to get auth token from Zustand persisted state (legacy - now using interceptor)
 const getAuthToken = (): string | null => {
   try {
     const authData = localStorage.getItem('mentra-auth-storage');
@@ -30,27 +72,19 @@ const getAuthToken = (): string | null => {
 class DashboardApiService implements DashboardApiClient {
   private async request<T>(
     endpoint: string, 
-    options: RequestInit = {}
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET',
+    data?: any
   ): Promise<T> {
-    const token = getAuthToken();
-    
-    const config: RequestInit = {
-      ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { Authorization: `Bearer ${token}` }),
-        ...options.headers,
-      },
-    };
-
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
-    
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ error: 'Network error' }));
-      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+    try {
+      const response = await api.request({
+        url: `${API_BASE_URL}${endpoint}`,
+        method,
+        data
+      });
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || error.message || 'Network error');
     }
-
-    return response.json();
   }
 
   async getOverview(timeframe: string = '30d'): Promise<StudentDashboardOverview> {
@@ -73,17 +107,11 @@ class DashboardApiService implements DashboardApiClient {
   }
 
   async createGoal(goalData: CreateGoalRequest): Promise<{ goal: Goal; message: string }> {
-    return this.request<{ goal: Goal; message: string }>('/student/goals', {
-      method: 'POST',
-      body: JSON.stringify(goalData),
-    });
+    return this.request<{ goal: Goal; message: string }>('/student/goals', 'POST', goalData);
   }
 
   async updateGoal(goalId: number, updates: UpdateGoalRequest): Promise<{ goal: Goal; message: string }> {
-    return this.request<{ goal: Goal; message: string }>(`/student/goals/${goalId}`, {
-      method: 'PUT',
-      body: JSON.stringify(updates),
-    });
+    return this.request<{ goal: Goal; message: string }>(`/student/goals/${goalId}`, 'PUT', updates);
   }
 
   async getProgress(timeframe: string = '30d', metric?: string): Promise<ProgressData> {
@@ -111,9 +139,7 @@ class DashboardApiService implements DashboardApiClient {
 
   // Goal milestone management
   async completeGoalMilestone(goalId: number, milestoneId: number): Promise<{ message: string }> {
-    return this.request<{ message: string }>(`/student/goals/${goalId}/milestones/${milestoneId}/complete`, {
-      method: 'POST',
-    });
+    return this.request<{ message: string }>(`/student/goals/${goalId}/milestones/${milestoneId}/complete`, 'POST');
   }
 
   async addGoalMilestone(goalId: number, milestone: {
@@ -121,10 +147,7 @@ class DashboardApiService implements DashboardApiClient {
     description: string;
     targetDate?: string;
   }): Promise<{ message: string }> {
-    return this.request<{ message: string }>(`/student/goals/${goalId}/milestones`, {
-      method: 'POST',
-      body: JSON.stringify(milestone),
-    });
+    return this.request<{ message: string }>(`/student/goals/${goalId}/milestones`, 'POST', milestone);
   }
 
   // Dashboard preferences
@@ -133,10 +156,7 @@ class DashboardApiService implements DashboardApiClient {
   }
 
   async updatePreferences(preferences: any): Promise<{ message: string }> {
-    return this.request('/student/preferences', {
-      method: 'PUT',
-      body: JSON.stringify(preferences),
-    });
+    return this.request('/student/preferences', 'PUT', preferences);
   }
 
   // Utility methods for data transformation

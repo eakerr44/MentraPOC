@@ -8,14 +8,18 @@ const createRateLimiter = () => {
   const config = getSecurityConfig();
   const env = getCurrentEnvironment();
   
+  // Very lenient rate limiting for development
+  const maxRequests = env === 'development' ? 10000 : config.rateLimit.max;
+  const windowMs = env === 'development' ? 60 * 1000 : config.rateLimit.windowMs; // 1 minute in dev
+  
   // Base rate limiting configuration
   const baseConfig = {
-    windowMs: config.rateLimit.windowMs,
-    max: config.rateLimit.max,
+    windowMs: windowMs,
+    max: maxRequests,
     message: {
       error: 'Too many requests',
       message: 'Rate limit exceeded. Please try again later.',
-      retryAfter: Math.ceil(config.rateLimit.windowMs / 1000)
+      retryAfter: Math.ceil(windowMs / 1000)
     },
     standardHeaders: 'draft-7', // Use standard X-RateLimit headers
     legacyHeaders: true, // Also include legacy headers for compatibility
@@ -36,12 +40,12 @@ const createAPIRateLimiter = () => {
   const env = getCurrentEnvironment();
   
   return rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: env === 'production' ? 100 : 500, // Stricter for production
+    windowMs: env === 'development' ? 60 * 1000 : 15 * 60 * 1000, // 1 minute in dev, 15 minutes in prod
+    max: env === 'development' ? 5000 : (env === 'production' ? 100 : 500), // Very lenient for dev
     message: {
       error: 'Too many API requests',
       message: 'API rate limit exceeded. Please try again later.',
-      retryAfter: 900 // 15 minutes
+      retryAfter: env === 'development' ? 60 : 900
     },
     standardHeaders: 'draft-7',
     legacyHeaders: true,
@@ -56,12 +60,12 @@ const createAuthRateLimiter = () => {
   const env = getCurrentEnvironment();
   
   return rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: env === 'production' ? 5 : 20, // Very strict for auth endpoints
+    windowMs: env === 'development' ? 60 * 1000 : 15 * 60 * 1000, // 1 minute in dev, 15 minutes in prod
+    max: env === 'development' ? 100 : (env === 'production' ? 5 : 20), // Lenient for dev testing
     message: {
       error: 'Too many authentication attempts',
-      message: 'Authentication rate limit exceeded. Please try again in 15 minutes.',
-      retryAfter: 900
+      message: 'Authentication rate limit exceeded. Please try again later.',
+      retryAfter: env === 'development' ? 60 : 900
     },
     standardHeaders: 'draft-7',
     legacyHeaders: true,
