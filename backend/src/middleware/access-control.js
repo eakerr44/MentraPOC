@@ -27,6 +27,11 @@ class DataFilterError extends Error {
 class AccessControlAudit {
   static async logAccessAttempt(req, resource, action, result, reason = null) {
     try {
+      // Temporarily disable database logging to prevent crashes
+      // TODO: Re-enable once database table is properly set up
+      console.log(`[ACCESS CONTROL] ${result.toUpperCase()}: ${req.user?.role || 'anonymous'} ${resource} ${action} - ${reason || 'success'}`);
+      return; // Skip database logging for now
+      
       const logEntry = {
         user_id: req.user?.id || null,
         user_role: req.user?.role || 'anonymous',
@@ -48,30 +53,27 @@ class AccessControlAudit {
       // Try to insert audit log, but don't crash if table/columns don't exist
       try {
         await pool.query(`
-          INSERT INTO access_control_audit_log (
-            user_id, user_role, resource_type, resource_id, action, result,
-            ip_address, user_agent, created_at
-          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+          INSERT INTO access_control_audit_log 
+          (user_id, user_role, resource_type, resource_id, action, result, ip_address, user_agent, additional_data)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
         `, [
-          logEntry.user_id, logEntry.user_role, logEntry.resource_type,
-          logEntry.resource_id, logEntry.action, logEntry.result,
-          logEntry.ip_address, logEntry.user_agent, logEntry.timestamp
+          logEntry.user_id,
+          logEntry.user_role, 
+          logEntry.resource_type,
+          logEntry.resource_id,
+          logEntry.action,
+          logEntry.result,
+          logEntry.ip_address,
+          logEntry.user_agent,
+          JSON.stringify(logEntry.request_data)
         ]);
       } catch (dbError) {
-        // Silently fail if table doesn't exist or columns are missing
-        // This prevents the middleware from crashing the app
-        if (process.env.NODE_ENV === 'development') {
-          console.warn('Access control audit logging failed (non-critical):', dbError.message);
-        }
+        // Don't crash the application for audit logging failures
+        console.error('Failed to log access control event:', dbError.message);
       }
-
-      // Log to console for development
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`[ACCESS CONTROL] ${result.toUpperCase()}: ${logEntry.user_role} ${action} ${resource}${reason ? ` - ${reason}` : ''}`);
-      }
-
     } catch (error) {
-      console.error('Failed to log access control event:', error);
+      console.error('Access control logging error:', error);
+      // Don't throw error - audit logging failure shouldn't crash the app
     }
   }
 

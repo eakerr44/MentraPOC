@@ -29,7 +29,7 @@ export const LoginPage: React.FC = () => {
         createdAt: new Date().toISOString()
       };
 
-      await login(demoUser, 'demo-token');
+      await login(demoUser);
     } catch (error) {
       console.error('Login failed:', error);
     } finally {
@@ -38,76 +38,89 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen layout-container flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <div className="flex justify-center mb-6">
-            <img 
-              src="/assets/logo/logo_with_words.png" 
-              alt="Mentra - AI-native learning platform"
-              className="h-16 w-auto"
-            />
-          </div>
-          <h2 className="text-heading text-center">
-            Welcome to Mentra
-          </h2>
-          <p className="mt-2 text-body text-center text-gray-600">
-            Sign in to continue your learning journey
-          </p>
+    <div className="min-h-screen bg-journal-sand flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="flex justify-center">
+          <img 
+            src="/assets/logo/logo_with_words.png" 
+            alt="Mentra"
+            className="h-20 w-auto"
+          />
         </div>
+        <h2 className="mt-6 text-center text-3xl font-bold text-charcoal">
+          Welcome back to Mentra
+        </h2>
+        <p className="mt-2 text-center text-sm text-charcoal-light">
+          Sign in to continue your learning journey
+        </p>
+      </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="card bg-white py-8 px-6 shadow-lg sm:rounded-lg sm:px-10">
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label htmlFor="email" className="sr-only">
+              <label htmlFor="email" className="block text-sm font-medium text-charcoal">
                 Email address
               </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="input-field"
-                placeholder="Email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+              <div className="mt-1">
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="input-field"
+                />
+              </div>
             </div>
+
             <div>
-              <label htmlFor="password" className="sr-only">
+              <label htmlFor="password" className="block text-sm font-medium text-charcoal">
                 Password
               </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="input-field"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <div className="mt-1">
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="input-field"
+                />
+              </div>
+            </div>
+
+            <div>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="btn-primary w-full justify-center"
+              >
+                {isLoading ? 'Signing in...' : 'Sign in'}
+              </button>
+            </div>
+          </form>
+
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="bg-white px-2 text-gray-500">Demo Account</span>
+              </div>
+            </div>
+
+            <div className="mt-4 text-center text-sm text-gray-600">
+              <p>Email: demo@mentra.com</p>
+              <p>Password: demo123</p>
             </div>
           </div>
-
-          <div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="btn-primary w-full"
-            >
-              {isLoading ? 'Signing in...' : 'Sign in'}
-            </button>
-          </div>
-
-          <div className="text-center">
-            <p className="text-caption text-gray-500">
-              Demo credentials are pre-filled for testing
-            </p>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
   );

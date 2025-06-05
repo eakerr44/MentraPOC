@@ -238,7 +238,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       </div>
 
       {/* Main content */}
-      <div className="lg:pl-64 flex flex-col flex-1 relative">
+      <div className="main-content">
         {/* Top navigation for mobile */}
         <header className="header sticky top-0 z-30 lg:hidden">
           <div className="px-4 sm:px-6 lg:px-8">
@@ -277,8 +277,8 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
         </div>
 
-        {/* Page content with right margin for encouragement widget */}
-        <main className="flex-1 p-6 lg:pr-80">
+        {/* Page content */}
+        <main className="flex-1">
           {children}
         </main>
       </div>

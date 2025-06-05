@@ -309,6 +309,8 @@ h1, h2, h3, h4, h5, h6 {
   position: fixed;
   width: 256px;
   z-index: 10;
+  left: 0;
+  top: 0;
 }
 
 .header {
@@ -467,7 +469,15 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--curiosity-coral-hover);
 }
 
-/* Sprig Encouragement Widget */
+/* Main content spacing - push content over to account for fixed sidebar */
+.main-content {
+  margin-left: 256px; /* Account for sidebar width */
+  padding: var(--spacing-lg);
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Sprig Encouragement Widget - Position relative to main content area */
 .sprig-encouragement {
   background: linear-gradient(135deg, var(--mentra-blue-pale), var(--growth-green-pale));
   border: 1px solid var(--growth-green-light);
@@ -476,14 +486,16 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: var(--shadow-sm);
   position: fixed;
   top: var(--spacing-xl);
-  right: var(--spacing-xl);
+  right: var(--spacing-xl); /* Position relative to the right edge */
   max-width: 280px;
   z-index: 5;
+  /* Center it better over the main content area */
+  transform: translateX(-50px); /* Move it left from the right edge */
 }
 
 .sprig-encouragement .sprig-icon {
-  width: 24px !important;
-  height: 24px !important;
+  width: 32px !important;  /* Match navigation icon size */
+  height: 32px !important;
 }
 
 /* Warm, Encouraging Typography */
@@ -491,11 +503,12 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   color: var(--text-charcoal);
   font-weight: 500;
+  font-size: var(--text-base);
 }
 
 .subtitle-text {
   color: var(--text-charcoal-light);
-  font-size: 11px;
+  font-size: var(--text-sm);
   opacity: 0.8;
 }
 
@@ -505,14 +518,18 @@ h1, h2, h3, h4, h5, h6 {
     font-size: var(--text-sm);
   }
   
-  .logo-text {
-    font-size: var(--text-lg);
+  .logo-container img {
+    height: 32px !important; /* Smaller on mobile */
   }
   
   .user-avatar {
     width: 32px;
     height: 32px;
     font-size: var(--text-base);
+  }
+  
+  .nav-item {
+    padding: 10px var(--spacing-md);
   }
 }
 
@@ -579,6 +596,34 @@ img[src*="/assets/sprig/"].w-8 {
   height: 40px !important;
 }
 
+/* Mobile adjustments */
+@media (max-width: 1024px) {
+  .main-content {
+    margin-left: 0; /* No sidebar margin on mobile */
+    padding: var(--spacing-lg);
+  }
+  
+  .sprig-encouragement {
+    display: none; /* Hide on mobile to avoid clutter */
+  }
+  
+  .sidebar {
+    transform: translateX(-100%); /* Hide sidebar on mobile by default */
+    transition: transform 0.3s ease;
+  }
+  
+  .sidebar.open {
+    transform: translateX(0);
+  }
+}
+
+/* User info at bottom */
+.user-section {
+  margin-top: auto;
+  padding: var(--spacing-md);
+  border-top: 1px solid var(--journal-sand-dark);
+}
+
 /* Navigation positioning */
 .sidebar-content {
   display: flex;
@@ -595,39 +640,6 @@ img[src*="/assets/sprig/"].w-8 {
 .navigation-section {
   flex: 1;
   padding: 0 var(--spacing-md);
-}
-
-/* User info at bottom */
-.user-section {
-  margin-top: auto;
-  padding: var(--spacing-md);
-  border-top: 1px solid var(--journal-sand-dark);
-}
-
-/* Main content spacing for encouragement widget */
-.main-content {
-  padding: var(--spacing-lg);
-  padding-right: 320px; /* Space for encouragement widget */
-}
-
-/* Mobile adjustments */
-@media (max-width: 1024px) {
-  .main-content {
-    padding-right: var(--spacing-lg); /* Normal padding on mobile */
-  }
-  
-  .sprig-encouragement {
-    display: none; /* Hide on mobile to avoid clutter */
-  }
-  
-  .sidebar {
-    transform: translateX(-100%); /* Hide sidebar on mobile by default */
-    transition: transform 0.3s ease;
-  }
-  
-  .sidebar.open {
-    transform: translateX(0);
-  }
 }
 
 /* Responsive Design Improvements */
@@ -649,25 +661,6 @@ img[src*="/assets/sprig/"].w-8 {
   .nav-item {
     padding: 10px var(--spacing-md);
   }
-}
-
-/* Fixed positioning adjustments */
-.sprig-encouragement {
-  background: linear-gradient(135deg, var(--mentra-blue-pale), var(--growth-green-pale));
-  border: 1px solid var(--growth-green-light);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-md);
-  box-shadow: var(--shadow-sm);
-  position: fixed;
-  top: var(--spacing-xl);
-  right: var(--spacing-xl);
-  max-width: 280px;
-  z-index: 5;
-}
-
-.sprig-encouragement .sprig-icon {
-  width: 20px !important;
-  height: 20px !important;
 }
 
 /* Make menu item icons smaller */
