@@ -29,7 +29,51 @@ router.get('/student/overview', authenticateJWT, roleCheck(['student']), async (
     const userId = req.user.id;
     const timeframe = req.query.timeframe || '30d'; // 7d, 30d, 90d, all
     
-    // Get basic student info
+    // Development mode: Return mock data for demo tokens
+    if (process.env.NODE_ENV === 'development' && userId === 'demo-user-1') {
+      console.log('🎯 Returning mock dashboard data for demo user');
+      
+      return res.json({
+        student: {
+          id: 'demo-user-1',
+          name: 'Demo User',
+          username: 'demo',
+          gradeLevel: '8th',
+          currentStreak: 7,
+          totalPoints: 1250,
+          memberSince: '2024-01-15T00:00:00Z',
+          learningPreferences: { visual: true, kinesthetic: false, auditory: true }
+        },
+        activitySummary: {
+          totalActivities: 45,
+          weeklyGrowth: 15,
+          journalEntries: 12,
+          problemsSolved: 8,
+          goalsCompleted: 3
+        },
+        learningInsights: {
+          topStrengths: ['Creative Writing', 'Pattern Recognition'],
+          growthAreas: ['Math Problem Solving', 'Time Management'],
+          recommendations: ['Try daily math practice', 'Set smaller goals']
+        },
+        goalProgress: {
+          activeGoals: 4,
+          completedGoals: 2,
+          totalProgress: 65
+        },
+        recentAchievements: [
+          { id: 1, title: 'Week Warrior', description: '7-day streak!', earnedAt: '2024-01-20' },
+          { id: 2, title: 'Journal Master', description: '10 journal entries', earnedAt: '2024-01-18' }
+        ],
+        upcomingReminders: [
+          { id: 1, title: 'Math homework due', date: '2024-01-25' },
+          { id: 2, title: 'Science project presentation', date: '2024-01-27' }
+        ],
+        timeframe: timeframe
+      });
+    }
+    
+    // Production code continues...
     const studentQuery = `
       SELECT u.id, u.username, u.email, u.first_name, u.last_name, u.created_at,
              s.grade_level, s.learning_preferences, s.goals, s.current_streak, s.total_points

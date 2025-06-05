@@ -47,6 +47,60 @@ const getRequestInfo = (req) => {
 router.get('/entries', authenticateJWT, roleCheck(['student', 'teacher', 'parent']), async (req, res) => {
   try {
     const user = getUserFromRequest(req);
+    
+    // Development mode: Return mock data for demo tokens
+    if (process.env.NODE_ENV === 'development' && user.id === 'demo-user-1') {
+      console.log('📝 Returning mock journal entries for demo user');
+      
+      return res.json({
+        entries: [
+          {
+            id: 'entry-1',
+            title: 'My First Day Learning',
+            content: 'Today was an amazing day! I learned so much about mathematics and really enjoyed the problem-solving exercises.',
+            mood: 'excited',
+            emotionalState: ['happy', 'motivated'],
+            tags: ['math', 'learning', 'growth'],
+            isPrivate: false,
+            createdAt: '2024-01-20T10:00:00Z',
+            updatedAt: '2024-01-20T10:00:00Z'
+          },
+          {
+            id: 'entry-2',
+            title: 'Struggling with Fractions',
+            content: 'Today I had a harder time with fractions. I need to practice more, but I\'m not giving up!',
+            mood: 'determined',
+            emotionalState: ['challenged', 'persistent'],
+            tags: ['math', 'fractions', 'challenge'],
+            isPrivate: true,
+            createdAt: '2024-01-19T15:30:00Z',
+            updatedAt: '2024-01-19T15:30:00Z'
+          },
+          {
+            id: 'entry-3',
+            title: 'Great Day in Science',
+            content: 'We did an experiment with chemical reactions today. It was so cool to see the colors change!',
+            mood: 'curious',
+            emotionalState: ['fascinated', 'engaged'],
+            tags: ['science', 'experiment', 'chemistry'],
+            isPrivate: false,
+            createdAt: '2024-01-18T14:15:00Z',
+            updatedAt: '2024-01-18T14:15:00Z'
+          }
+        ],
+        total: 3,
+        hasMore: false,
+        pagination: {
+          limit: 20,
+          offset: 0,
+          page: 1,
+          totalPages: 1
+        },
+        encryptionEnabled: true,
+        filters: req.query
+      });
+    }
+    
     const requestInfo = getRequestInfo(req);
     const {
       startDate,

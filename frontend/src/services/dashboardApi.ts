@@ -12,12 +12,27 @@ import {
 
 const API_BASE_URL = '/api/dashboard';
 
+// Helper function to get auth token from Zustand persisted state
+const getAuthToken = (): string | null => {
+  try {
+    const authData = localStorage.getItem('mentra-auth-storage');
+    if (authData) {
+      const parsed = JSON.parse(authData);
+      return parsed.state?.token || null;
+    }
+    return null;
+  } catch (error) {
+    console.error('Error retrieving auth token:', error);
+    return null;
+  }
+};
+
 class DashboardApiService implements DashboardApiClient {
   private async request<T>(
     endpoint: string, 
     options: RequestInit = {}
   ): Promise<T> {
-    const token = localStorage.getItem('token');
+    const token = getAuthToken();
     
     const config: RequestInit = {
       ...options,

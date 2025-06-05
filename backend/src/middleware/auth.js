@@ -32,6 +32,51 @@ const authenticateJWT = async (req, res, next) => {
       });
     }
 
+    // Development mode: Handle demo tokens
+    if (process.env.NODE_ENV === 'development' && token.startsWith('demo-token-')) {
+      console.log('🔧 DEV MODE: Using demo token authentication');
+      
+      // Create demo user for development
+      const demoUser = {
+        id: 'demo-user-1',
+        email: 'demo@mentra.com',
+        role: 'student',
+        status: 'active',
+        first_name: 'Demo',
+        last_name: 'User',
+        grade_level: '8th',
+        learning_style: 'visual',
+        school_name: 'Demo School',
+        subjects_taught: null,
+        relationship_type: null
+      };
+
+      req.user = {
+        id: demoUser.id,
+        email: demoUser.email,
+        role: demoUser.role,
+        status: demoUser.status,
+        first_name: demoUser.first_name,
+        last_name: demoUser.last_name,
+        profile: {
+          grade_level: demoUser.grade_level,
+          learning_style: demoUser.learning_style,
+          school_name: demoUser.school_name,
+          subjects_taught: demoUser.subjects_taught,
+          relationship_type: demoUser.relationship_type
+        },
+        permissions: ['read:own_data', 'write:own_data'] // Basic permissions for demo
+      };
+      
+      req.token = {
+        raw: token,
+        decoded: { id: demoUser.id, role: demoUser.role }
+      };
+
+      console.log('✅ Demo user authenticated:', demoUser.email);
+      return next();
+    }
+
     // Verify token
     const tokenVerification = verifyToken(token, 'access');
     

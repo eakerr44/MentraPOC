@@ -60,6 +60,75 @@ const calculateAverage = (values, decimals = 2) => {
 router.get('/templates', authenticateJWT, roleCheck(['student', 'teacher', 'parent']), async (req, res) => {
   try {
     const user = getUserFromRequest(req);
+    
+    // Development mode: Return mock data for demo tokens
+    if (process.env.NODE_ENV === 'development' && user.id === 'demo-user-1') {
+      console.log('🧮 Returning mock problem templates for demo user');
+      
+      return res.json({
+        templates: [
+          {
+            id: 'template-1',
+            title: 'Basic Algebra: Solving Linear Equations',
+            description: 'Practice solving one-variable linear equations with step-by-step guidance.',
+            problem_type: 'algebra',
+            subject: 'math',
+            difficulty_level: 'beginner',
+            grade_level_min: 7,
+            grade_level_max: 9,
+            estimated_time_minutes: 15,
+            tags: ['algebra', 'equations', 'linear'],
+            learning_objectives: ['Solve linear equations', 'Understand variable isolation', 'Apply inverse operations'],
+            usage_count: 245,
+            success_rate: 85.4,
+            average_completion_time: 12.3,
+            created_at: '2024-01-10T00:00:00Z'
+          },
+          {
+            id: 'template-2',
+            title: 'Fraction Operations',
+            description: 'Learn to add, subtract, multiply, and divide fractions with visual aids.',
+            problem_type: 'arithmetic',
+            subject: 'math',
+            difficulty_level: 'intermediate',
+            grade_level_min: 5,
+            grade_level_max: 8,
+            estimated_time_minutes: 20,
+            tags: ['fractions', 'operations', 'arithmetic'],
+            learning_objectives: ['Master fraction operations', 'Understand equivalent fractions', 'Simplify results'],
+            usage_count: 189,
+            success_rate: 78.2,
+            average_completion_time: 18.7,
+            created_at: '2024-01-08T00:00:00Z'
+          },
+          {
+            id: 'template-3',
+            title: 'Scientific Method Investigation',
+            description: 'Design and conduct a scientific experiment following proper methodology.',
+            problem_type: 'investigation',
+            subject: 'science',
+            difficulty_level: 'intermediate',
+            grade_level_min: 6,
+            grade_level_max: 10,
+            estimated_time_minutes: 30,
+            tags: ['scientific-method', 'experiment', 'hypothesis'],
+            learning_objectives: ['Apply scientific method', 'Design controlled experiments', 'Analyze results'],
+            usage_count: 156,
+            success_rate: 91.3,
+            average_completion_time: 28.2,
+            created_at: '2024-01-05T00:00:00Z'
+          }
+        ],
+        pagination: {
+          total: 3,
+          limit: 20,
+          offset: 0,
+          hasMore: false
+        },
+        filters: req.query
+      });
+    }
+    
     const {
       problemType,
       subject,
@@ -209,6 +278,40 @@ router.get('/templates/:templateId', authenticateJWT, roleCheck(['student', 'tea
 router.post('/sessions', authenticateJWT, roleCheck(['student']), async (req, res) => {
   try {
     const user = getUserFromRequest(req);
+    
+    // Development mode: Return mock data for demo tokens
+    if (process.env.NODE_ENV === 'development' && user.id === 'demo-user-1') {
+      console.log('🎯 Creating mock problem session for demo user');
+      
+      const { templateId } = req.body;
+      const sessionId = `session-${Date.now()}`;
+      
+      return res.status(201).json({
+        sessionId: sessionId,
+        problemInstance: {
+          id: `instance-${sessionId}`,
+          title: 'Solve for x: 2x + 5 = 13',
+          description: 'Find the value of x in this linear equation.',
+          problemData: {
+            equation: '2x + 5 = 13',
+            steps: [
+              'Subtract 5 from both sides',
+              'Divide both sides by 2',
+              'Simplify the result'
+            ]
+          }
+        },
+        currentStep: 1,
+        totalSteps: 3,
+        guidance: {
+          stepTitle: 'Step 1: Isolate the variable term',
+          instruction: 'What operation should you perform to eliminate the constant term from the left side?',
+          hint: 'Look at the +5 on the left side. What operation would cancel it out?'
+        },
+        startedAt: new Date().toISOString()
+      });
+    }
+    
     const requestInfo = getRequestInfo(req);
     const { templateId, notes } = req.body;
 
